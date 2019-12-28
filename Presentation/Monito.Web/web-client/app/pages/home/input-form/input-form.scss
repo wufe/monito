@@ -1,0 +1,158 @@
+@import "~/styles/main";
+
+.input-form__component {
+    @include container;
+    padding: 5px 25px;
+
+    .__content {
+        display: flex;
+        flex-direction: column;
+
+        .__textarea {
+            width: 100%;
+            height: 150px;
+
+            padding: 15px;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 3px;
+    
+            font-size: .9rem;
+            border-color: #DADADA;
+    
+            @media (prefers-color-scheme: dark) {
+                background: #444;
+                border-color: #555;
+                color: white;
+            }
+        }
+
+        .__bottom-row {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: row;
+
+            .__settings-container {
+                flex: 1;
+                
+                @include medium-up {
+                    margin-right: 50px;
+                }
+
+                .__settings-content {
+                    display: grid;
+                    grid-template-columns: repeat(6, 1fr);
+                    grid-gap: 10px;
+
+                    overflow: hidden;
+                    transition: max-height ease-in .3s;
+                    &.--visible {
+                        max-height: 500px;
+                    }
+                    &.--hidden {
+                        max-height: 0px;
+                    }
+
+                    .__input-container {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: stretch;
+
+                        label {
+                            @extend %input-label;
+                        }
+
+                        input, select {
+                            @extend %input;
+                        }
+
+                        @include small-only {
+                            &[data-input-type=ua] {
+                                grid-column: 1 / span 6;
+                            }
+    
+                            &[data-input-type=method] {
+                                grid-column: 1 / span 3;
+                            }
+    
+                            &[data-input-type=timeout] {
+                                grid-column: 4 / span 3;
+                            }
+    
+                            &[data-input-type=threads] {
+                                grid-column: 1 / span 3;
+                            }
+    
+                            &[data-input-type=redirects] {
+                                grid-column: 4 / span 3;
+                            }
+                        }
+
+                        @include medium-up {
+                            &[data-input-type=ua] {
+                                grid-column: 1 / span 3;
+                            }
+    
+                            &[data-input-type=method] {
+                                grid-column: 4 / span 3;
+                            }
+    
+                            &[data-input-type=timeout] {
+                                grid-column: 1 / span 2;
+                            }
+    
+                            &[data-input-type=threads] {
+                                grid-column: 3 / span 2;
+                            }
+    
+                            &[data-input-type=redirects] {
+                                grid-column: 5 / span 2;
+                            }
+                        }
+                    }
+                }
+
+                .__settings-toggler {
+                    color: #232323;
+                    font-size: .85rem;
+                    margin: 20px 0 0 0;
+                    cursor: pointer;
+                    user-select: none;
+                    
+                    @media (prefers-color-scheme: dark) {
+                        color: white;
+                    }
+
+                    @include small-only {
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+            }
+            .__actions-container {
+                padding: 10px 15px;
+
+                button {
+                    @extend %button;
+                }
+            }
+
+            @include small-only {
+                flex-direction: column;
+                align-items: stretch;
+
+                .__actions-container {
+                    order: 1;
+
+                    button {
+                        width: 100%;
+                        padding: 15px 0;
+                        margin: 20px auto;
+                    }
+                }
+            }
+        }
+    }
+
+    
+}

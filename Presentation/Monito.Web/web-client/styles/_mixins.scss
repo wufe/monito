@@ -1,0 +1,68 @@
+@import "settings";
+
+
+@mixin media($mq-breakpoint, $mq-breakpoints: $breakpoints) {
+	@if map-has-key($mq-breakpoints, $mq-breakpoint) {
+		$mq-breakpoint: map-get($mq-breakpoints, $mq-breakpoint);
+	}
+
+	@media screen and (min-width: #{$mq-breakpoint}) {
+		@content;
+	}
+}
+
+@mixin small-only {
+	@media screen and (max-width: #{map-get($breakpoints, small)}) {
+		@content;
+	}
+}
+
+@mixin small-up {
+	@media screen and (min-width: 300px) {
+		@content;
+	}
+}
+
+@mixin medium-only {
+	@media screen and (max-width: #{map-get($breakpoints, medium)}) {
+		@content;
+	}
+}
+
+@mixin medium-up {
+	@media screen and (min-width: #{map-get($breakpoints, small)}) {
+		@content;
+	}
+}
+
+@mixin large-up {
+	@media screen and (min-width: #{map-get($breakpoints, medium)}) {
+		@content;
+	}
+}
+
+
+@mixin container {
+	margin: 0 auto;
+	max-width: 100%;
+
+    @include small-up {
+        max-width: map-get($breakpoints, small);
+    }
+
+    @include medium-up {
+        max-width: map-get($breakpoints, medium);
+    }
+
+    @include large-up {
+        max-width: map-get($breakpoints, large);
+    }
+}
+
+@mixin full-container {
+	width: 100%;
+
+	@include large-up {
+		max-width: unset;
+	}
+}

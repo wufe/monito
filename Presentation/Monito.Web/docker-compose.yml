@@ -1,0 +1,24 @@
+version: '3'
+services:
+  application:
+    image: kesshin/development:v1.6
+    container_name: monito-application
+    command: yarn dev
+    working_dir: /home/data
+    depends_on:
+      - database
+    ports:
+      - 127.0.0.1:8008:8008
+      - 127.0.0.1:44013:44413
+    volumes:
+      - .:/home/data
+    links:
+      - database
+  database:
+    image: mysql:8
+    container_name: monito-database
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: .env
+    ports:
+      - 127.0.0.1:3300:3306

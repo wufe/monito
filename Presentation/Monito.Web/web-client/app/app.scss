@@ -1,0 +1,12 @@
+@import "~/styles/main";
+
+body {
+    @media (prefers-color-scheme: dark) {
+        background: #343434;
+    }
+
+    .app__component {
+    
+    }
+}
+
