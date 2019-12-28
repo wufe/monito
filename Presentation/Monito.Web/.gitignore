@@ -191,3 +191,5 @@ config.json
 
 wwwroot/dist
 wwwroot/lib
+
+appsettings.Production.json
