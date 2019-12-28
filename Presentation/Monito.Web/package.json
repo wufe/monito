@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wufe/monito"
+    "url": "https://github.com/Wufe/monito/tree/master/Presentation/Monito.Web"
   },
   "scripts": {
     "watch:client": "parcel watch -t browser web-client/index.html --public-url /static --out-dir wwwroot/dist/static --hmr-port 44413 --no-cache",
