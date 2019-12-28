@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Monito.Database.EF6\Monito.Database.EF6.csproj" />
+    <ProjectReference Include="..\..\Data\Monito.Database.Interface\Monito.Database.Interface.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+
+
+</Project>

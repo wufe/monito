@@ -7,20 +7,24 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using monito.Models;
+using Monito.Web.Models;
+using Monito.Database.Interface;
 
-namespace monito.Controllers
+namespace Monito.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IDbContext _dbContext;
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(
             IWebHostEnvironment env,
-            ILogger<HomeController> logger
+            ILogger<HomeController> logger,
+            IDbContext context
         )
         {
+            _dbContext = context;
             _env = env;
             _logger = logger;
         }

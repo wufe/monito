@@ -1,6 +1,6 @@
 using System;
 
-namespace monito.Models
+namespace Monito.Web.Models
 {
     public class ErrorViewModel
     {
