@@ -1,6 +1,6 @@
 namespace Monito.Database.Entities.Interface {
 
-    public interface IIdentityEntity {
+    public interface IPrimaryKeyEntity {
         int ID { get; set; }
     }
 

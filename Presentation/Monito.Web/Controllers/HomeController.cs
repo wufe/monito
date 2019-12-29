@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Monito.Web.Models;
-using Monito.Database.Interface;
 using Monito.Database.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Monito.Web.Controllers
 {
@@ -17,19 +17,29 @@ namespace Monito.Web.Controllers
     {
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<HomeController> _logger;
+		private readonly DbContext _context;
 
-        public HomeController(
+		public HomeController(
             IWebHostEnvironment env,
-            ILogger<HomeController> logger
+            ILogger<HomeController> logger,
+            DbContext context
         )
         {
             _env = env;
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
             var indexPath = Path.Combine(_env.ContentRootPath, @"wwwroot/dist/static/index.html");
+
+            var user = new User{
+                Email = "ciccio@example.com"
+            };
+            _context.Add(user);
+            _context.SaveChanges();
+
             return PhysicalFile(indexPath, "text/html");
         }
 

@@ -5,7 +5,7 @@ using Monito.Database.Entities.Interface;
 namespace Monito.Repository.Interface
 {
     public interface IReadRepository<T>
-        where T: IIdentityEntity
+        where T: IPrimaryKeyEntity
     {
         T Find(int ID);
         IQueryable<T> FindAll(Func<T, bool> selector);

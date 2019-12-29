@@ -15,10 +15,12 @@ services:
     links:
       - database
   database:
-    image: mysql:8
+    image: mysql:8.0.18
     container_name: monito-database
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     env_file: .env
+    volumes:
+      - ./Infrastructure/DatabaseScripts.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 127.0.0.1:3300:3306

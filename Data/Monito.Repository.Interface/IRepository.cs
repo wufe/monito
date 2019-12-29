@@ -2,7 +2,7 @@ using Monito.Database.Entities.Interface;
 
 namespace Monito.Repository.Interface {
     public interface IRepository<T> : IReadRepository<T>
-        where T: IIdentityEntity
+        where T: IPrimaryKeyEntity
     {
         void Insert(T entity);
         void Update(T entity);
