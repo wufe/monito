@@ -9,5 +9,6 @@ namespace Monito.Repository.Interface
     {
         T Find(int ID);
         IQueryable<T> FindAll(Func<T, bool> selector);
+        IQueryable<T> FindAll();
     }
 }

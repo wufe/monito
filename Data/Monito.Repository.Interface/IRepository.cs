@@ -6,5 +6,6 @@ namespace Monito.Repository.Interface {
     {
         void Insert(T entity);
         void Update(T entity);
+        void SaveChanges();
     }
 }

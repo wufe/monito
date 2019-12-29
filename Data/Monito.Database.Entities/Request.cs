@@ -11,7 +11,7 @@ namespace Monito.Database.Entities {
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 		public int UserID { get; set; }
-		public User User { get; set; }
+		public virtual User User { get; set; }
 		public virtual ICollection<File> Files { get; set; }
 		public virtual ICollection<Link> Links { get; set; }
 	}

@@ -3,6 +3,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Monito.Database.Entities\Monito.Database.Entities.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Monito.Database.EFCore\Monito.Database.EFCore.csproj" />
+    <ProjectReference Include="..\..\Data\Monito.Repository.Interface\Monito.Repository.Interface.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Monito.Repository.EFCore\Monito.Repository.EFCore.csproj" />
+    <ProjectReference Include="..\..\Domain\Monito.Domain.Service\Monito.Domain.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
