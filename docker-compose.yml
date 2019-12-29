@@ -3,7 +3,7 @@ services:
   application:
     image: kesshin/development:v1.6
     container_name: monito-application
-    command: yarn dev
+    command: runuser node -c 'yarn dev'
     working_dir: /home/data/Presentation/Monito.Web
     depends_on:
       - database

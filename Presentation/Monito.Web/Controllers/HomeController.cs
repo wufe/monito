@@ -9,22 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Monito.Web.Models;
 using Monito.Database.Interface;
+using Monito.Database.Entities;
 
 namespace Monito.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IDbContext _dbContext;
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(
             IWebHostEnvironment env,
-            ILogger<HomeController> logger,
-            IDbContext context
+            ILogger<HomeController> logger
         )
         {
-            _dbContext = context;
             _env = env;
             _logger = logger;
         }
