@@ -25,5 +25,16 @@ namespace Monito.Domain.Service {
 			_userRepository.Insert(user);
 			_userRepository.SaveChanges();
 		}
+
+		public User FindOrCreateUserByIP(string IP) {
+			var user = FindByIP(IP);
+			if (user == null) {
+				user = new User() {
+					IP = IP
+				};
+				Add(user);
+			}
+			return user;
+		}
 	}
 }

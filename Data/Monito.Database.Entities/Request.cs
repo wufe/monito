@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Monito.Database.Entities.Interface;
 
 namespace Monito.Database.Entities {
-	public class Request : IPrimaryKeyEntity, ITimestampTrackedEntity {
+	public class Request : IPrimaryKeyEntity, ITimestampTrackedEntity, IUUIDTrackedEntity {
 		public int ID { get; set; }
 		public RequestType Type { get; set; }
 		public string Options { get; set; }
 		public RequestStatus Status { get; set; }
+		public Guid UUID { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 		public int UserID { get; set; }

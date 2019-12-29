@@ -19,6 +19,7 @@ using Monito.Domain.Service.Interface;
 using Monito.Repository.EFCore;
 using Monito.Repository.Interface;
 using Monito.Web.Services;
+using Monito.Web.Services.Interface;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 
@@ -60,11 +61,15 @@ namespace Monito.Web
                 #region Domain services
                 services
                     .AddScoped<IUserService, UserService>();
+                services
+                    .AddScoped<IRequestService, RequestService>();
                 #endregion
 
                 #region Application services
                 services
-                    .AddScoped<RequestService>();
+                    .AddScoped<IHttpRequestService, HttpRequestService>();
+                services
+                    .AddScoped<IJobService, JobService>();
                 #endregion
             #endregion
         }

@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Http;
+using Monito.Web.Services.Interface;
 
 namespace Monito.Web.Services {
-	public class RequestService {
+	public class HttpRequestService : IHttpRequestService {
 		private readonly HttpContext _httpContext;
 
-		public RequestService(IHttpContextAccessor contextAccessor)
+		public HttpRequestService(IHttpContextAccessor contextAccessor)
 		{
 			_httpContext = contextAccessor.HttpContext;
 		}
