@@ -8,9 +8,11 @@ export type GlobalState = {
 export type ApplicationState = {
 	loading: boolean;
 	loadingCount: number;
+	logMessages: string[];
 }
 
 export const getInitialState = (): ApplicationState => ({
 	loading: false,
-	loadingCount: 0
+	loadingCount: 0,
+	logMessages: []
 })

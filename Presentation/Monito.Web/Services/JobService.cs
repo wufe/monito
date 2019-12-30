@@ -42,5 +42,9 @@ namespace Monito.Web.Services {
 			var optionsValueObject = _mapper.Map<SaveJobInputModel, RequestOptions>(inputModel);
 			return JsonConvert.SerializeObject(optionsValueObject);
 		}
+
+		public RetrieveJobOutputModel BuildJobOutputModelFromRequest(Request request) {
+			return _mapper.Map<Request, RetrieveJobOutputModel>(request);
+		}
 	}
 }

@@ -1,0 +1,48 @@
+@import "~/styles/main";
+
+.log-box__component {
+	
+	padding: 10px;
+	position: relative;
+	
+	.__content {
+		@include container;
+		color: #222;
+		font-weight: normal;
+		padding: 15px 0 20px 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+
+		@media (prefers-color-scheme: dark) {
+			color: #CCC;
+			font-weight: 100;
+		}
+
+		.__message {
+			padding: 5px 25px 5px 25px;
+			// transform: scaleY(.93);
+			// letter-spacing: .1em;
+			font-family: 'Source Code Pro', monospace;
+			font-size: .74rem;
+
+			&:last-child {
+				background-color: #E0E0E0;
+				@media (prefers-color-scheme: dark) {
+					background-color: #2A2A2A;
+				}
+			}
+		}
+	}
+
+	.__overlay {
+		z-index: 1;
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		pointer-events: none;
+		background: linear-gradient(0deg, rgba(black, 0) 0%, rgba(black, .6) 50%, rgba(black, .7) 100%);
+	}
+}

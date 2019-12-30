@@ -1,0 +1,32 @@
+import * as React from 'react';
+import './log-box.scss';
+import { Scrollbars } from 'react-custom-scrollbars';
+
+type Props = {
+	messages: string[];
+}
+
+export const LogBox = (props: React.PropsWithChildren<Props>) => {
+
+	const scrollableContent = React.useRef<Scrollbars>(null);
+
+	React.useEffect(() => {
+		let scrollableDiv = scrollableContent.current;
+		if (scrollableDiv) {
+			scrollableDiv.scrollToBottom();
+		}
+	})
+
+	return <div className="log-box__component">
+		<div className="__content">
+			<Scrollbars
+				ref={scrollableContent}
+				style={{ width: "100%", height: 200 }}>
+				{props.messages.map((message, index) => <div className="__message" key={index}>
+					{message}
+				</div>)}
+			</Scrollbars>
+		</div>
+		<div className="__overlay"></div>
+	</div>
+};

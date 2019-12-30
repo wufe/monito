@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './input-form.scss';
-import { JobRequestFormFields, JobRequestHTTPMethod } from '~/types/form';
+import { JobRequestFormFields, JobRequestHTTPMethod } from '~/types/job';
 
 type Props = {
     onSubmit: (fields: JobRequestFormFields) => any;

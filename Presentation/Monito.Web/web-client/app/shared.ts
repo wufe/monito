@@ -1,15 +1,15 @@
 import * as React from "react";
-import { SetLoadingActionBuilder } from "~/state/action";
+import { setLoadingActionBuilder } from "~/state/action";
 
 export const APPLICATION_NAME = "Mònito";
 
 export const LazyBuilder = (lazyImport: Promise<{ default: () => JSX.Element }>) =>
 	(dispatch: React.Dispatch<any>) =>
 		React.lazy(() => {
-			dispatch(SetLoadingActionBuilder(true));
+			dispatch(setLoadingActionBuilder(true));
 			return lazyImport
 				.then(x => {
-					dispatch(SetLoadingActionBuilder(false));
+					dispatch(setLoadingActionBuilder(false));
 					return x;
 				});
 		});

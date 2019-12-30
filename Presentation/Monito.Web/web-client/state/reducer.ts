@@ -15,6 +15,14 @@ const applicationReducer: Reducer<ApplicationState> = (state: ApplicationState =
             }
             const loading = loadingCount !== 0;
             return { ...state, loading, loadingCount };
+        case ApplicationActions.AddLogMessage:
+            return {
+                ...state,
+                logMessages: [
+                    ...state.logMessages,
+                    action.payload
+                ]
+            };
         default:
             return state;
     }

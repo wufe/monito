@@ -32,16 +32,25 @@ namespace Monito.Web.Controllers.API {
 			if (ModelState.IsValid) {
 				var user = _userService.FindOrCreateUserByIP(_httpRequestService.GetIP());
 				var request = _jobService.BuildRequest(inputModel, user);
-				_requestService.AddRequest(request);
+				_requestService.Add(request);
 				return new JsonResult(new {
 					userUUID = user.UUID,
 					requestUUID = request.UUID
 				});
 			} else {
-				// TODO: Return detailed message
+				// TODO: Return detailed error message
 				return BadRequest();
 			}
-			
+		}
+
+		[HttpGet("{userUUID:guid}/{requestUUID:guid}")]
+		public IActionResult RetrieveJob(Guid userUUID, Guid requestUUID) {
+			var request = _requestService.FindByGuid(requestUUID);
+			if (request == null) {
+				return NotFound();
+			} else {
+				return new JsonResult(_jobService.BuildJobOutputModelFromRequest(request));
+			}
 		}
 	}
 

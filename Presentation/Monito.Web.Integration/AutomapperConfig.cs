@@ -1,7 +1,9 @@
 ﻿using System;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Monito.Database.Entities;
 using Monito.ValueObjects;
+using Newtonsoft.Json;
 
 namespace Monito.Web.Integration
 {
@@ -10,6 +12,8 @@ namespace Monito.Web.Integration
         public PresentationMappingProfile()
         {
             CreateMap<SaveJobInputModel, RequestOptions>();
+            CreateMap<Request, RetrieveJobOutputModel>()
+                .ForMember(d => d.Options, opt => opt.MapFrom(s => JsonConvert.DeserializeObject<RequestOptions>(s.Options)));
         }
     }
 
