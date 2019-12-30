@@ -1,5 +1,5 @@
 using Monito.Database.Entities;
-using Monito.Web.Models.Input;
+using Monito.ValueObjects;
 
 namespace Monito.Web.Services.Interface {
 	public interface IJobService {

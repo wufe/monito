@@ -1,13 +1,13 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 using Monito.Domain.Service.Interface;
-using Monito.Web.Models.Input;
+using Monito.ValueObjects;
 using Monito.Web.Services.Interface;
 
 namespace Monito.Web.Controllers.API {
 
 	[ApiController]
-	[Route("[controller]")]
+	[Route("api/[controller]")]
 	public class JobController : ControllerBase {
 		private readonly IJobService _jobService;
 		private readonly IHttpRequestService _httpRequestService;
@@ -38,6 +38,7 @@ namespace Monito.Web.Controllers.API {
 					requestUUID = request.UUID
 				});
 			} else {
+				// TODO: Return detailed message
 				return BadRequest();
 			}
 			

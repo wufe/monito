@@ -4,6 +4,7 @@ import { JobRequestFormFields, JobRequestHTTPMethod } from '~/types/form';
 
 type Props = {
     onSubmit: (fields: JobRequestFormFields) => any;
+    disabled: boolean;
 }
 
 export const InputForm = (props: React.PropsWithChildren<Props>) => {
@@ -63,12 +64,13 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
     const trySubmit = () => {
         if (!fields.links.trim())
             return alert('Paste some link');
-        props.onSubmit(fields);
+        props.onSubmit(fields)
     };
 
     return <div className="input-form__component">
         <div className="__content">
             <textarea
+                disabled={props.disabled}
                 className="__textarea"
                 placeholder="Insert your links here.."
                 onChange={e => setField('links')(e.target.value)}
@@ -79,6 +81,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                         <div data-input-type="ua" className="__input-container">
                             <label>User Agent</label>
                             <input
+                                disabled={props.disabled}
                                 type="text"
                                 onChange={e => setField('userAgent')(e.target.value)}
                                 value={fields.userAgent} />
@@ -86,6 +89,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                         <div data-input-type="method" className="__input-container">
                             <label>HTTP Method</label>
                             <select
+                                disabled={props.disabled}
                                 onChange={e => setField('method')(e.target.value)}
                                 value={fields.method} >
                                 {Object.keys(JobRequestHTTPMethod)
@@ -95,6 +99,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                         <div data-input-type="timeout" className="__input-container">
                             <label>Timeout (ms)</label>
                             <input
+                                disabled={props.disabled}
                                 step={500}
                                 type="number"
                                 onChange={e => setField('timeout')(e.target.value)}
@@ -103,6 +108,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                         <div data-input-type="threads" className="__input-container">
                             <label>Threads</label>
                             <input
+                                disabled={props.disabled}
                                 type="number"
                                 onChange={e => setField('threads')(e.target.value)}
                                 value={fields.threads} />
@@ -110,6 +116,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                         <div data-input-type="redirects" className="__input-container">
                             <label>Max redirects</label>
                             <input
+                                disabled={props.disabled}
                                 type="number"
                                 onChange={e => setField('redirects')(e.target.value)}
                                 value={fields.redirects} />
@@ -121,7 +128,10 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                     </div>
                 </div>
                 <div className="__actions-container">
-                    <button className="--success" onClick={trySubmit}>Start</button>
+                    <button
+                        disabled={props.disabled}
+                        className="--success"
+                        onClick={trySubmit}>Start</button>
                 </div>
             </div>
         </div>

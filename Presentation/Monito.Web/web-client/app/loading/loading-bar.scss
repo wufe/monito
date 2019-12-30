@@ -1,0 +1,42 @@
+@import "~/styles/main";
+
+@keyframes spinner {
+	0% {
+		width: 0;
+	}
+	50% {
+		width: 100%;
+		margin-left: 50%;
+	}
+	100% {
+		width: 0;
+		margin-left: 100%;
+	}
+}
+
+.loading-bar__component {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	display: block;
+	width: 100%;
+	height: 4px;
+	background-color: rgba(black, .3);
+	overflow: hidden;
+	pointer-events: none;
+	transition: opacity .3s ease-in-out;
+
+	opacity: 0;
+	&.--visible {
+		opacity: 1;
+	}
+
+	.__sliding-bar {
+		width: 50%;
+		height: 100%;
+		margin-left: 0;
+		background-color: $nord12;
+		animation: spinner 3s ease-in-out infinite;
+	}
+}

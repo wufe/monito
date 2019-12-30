@@ -12,27 +12,22 @@ using Monito.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Monito.Domain.Service.Interface;
 using Monito.Web.Services;
+using Monito.Web.Services.Interface;
 
 namespace Monito.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IWebHostEnvironment _env;
-        private readonly ILogger<HomeController> _logger;
+        private readonly ISpaService _spaService;
 
-		public HomeController(
-            IWebHostEnvironment env,
-            ILogger<HomeController> logger
-        )
+		public HomeController(ISpaService spaService)
         {
-            _env = env;
-            _logger = logger;
+            _spaService = spaService;
         }
 
         public IActionResult Index()
         {
-            var indexPath = Path.Combine(_env.ContentRootPath, @"wwwroot/dist/static/index.html");
-            return PhysicalFile(indexPath, "text/html");
+            return PhysicalFile(_spaService.GetIndexFilePath(), "text/html");
         }
     }
 }
