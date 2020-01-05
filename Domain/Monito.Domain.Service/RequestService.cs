@@ -10,13 +10,16 @@ using Monito.Repository.Interface;
 namespace Monito.Domain.Service {
 	public class RequestService : IRequestService {
 		private readonly IRepository<Request> _requestRepository;
+		private readonly IRepository<Link> _linksRepository;
 		private readonly IMapper _mapper;
 
 		public RequestService(
 			IRepository<Request> requestRepository,
+			IRepository<Link> linksRepository,
 			IMapper mapper)
 		{
 			_requestRepository = requestRepository;
+			_linksRepository = linksRepository;
 			_mapper = mapper;
 		}
 
@@ -30,8 +33,16 @@ namespace Monito.Domain.Service {
 		public Request FindByGuid(Guid guid) {
 			var request = _requestRepository
 				.FindAll()
-				.ProjectTo<RequestWithDoneLinks>(_mapper.ConfigurationProvider)
 				.FirstOrDefault(x => x.UUID == guid);
+
+			if (request != null) {
+				request.Links = _linksRepository
+					.FindAll(x => x.RequestID == request.ID && x.Status == LinkStatus.Done)
+					.OrderBy(x => x.ID)
+					.Take(100000)
+					.ToList();
+			}
+
 			return request;
 		}
 	}

@@ -52,7 +52,7 @@ $status-color-200: darken($nord14, 14%);
 				background-color: $status-color-200;
 			}
 
-			&.--code302 {
+			&.--code301, &.--code302 {
 				background-color: $status-color-302;
 			}
 		}
@@ -132,7 +132,7 @@ $status-color-200: darken($nord14, 14%);
 				&.--code200 {
 					color: $status-color-200;
 				}
-				&.--code302 {
+				&.--code301, .--code302 {
 					color: $status-color-302;
 				}
 			}

@@ -14,6 +14,19 @@ import (
 
 func main() {
 
+	// request := services.NewHTTPRequest(&services.HTTPRequestStackItem{
+	// 	Url:             "http://bembi.dev",
+	// 	Method:          "GET",
+	// 	MaxRedirects:    1,
+	// 	CurrentRedirect: 0,
+	// })
+
+	// fmt.Println(*request)
+	// fmt.Println(request.Response.StatusCode)
+	// fmt.Println(request.Response.Request.URL)
+	// fmt.Println(request.RedirectsFrom.Response.Request.URL)
+	// panic(false)
+
 	parsedCliArguments := cli.ParseCliArguments(os.Args)
 
 	err := godotenv.Load()

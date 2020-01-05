@@ -89,15 +89,17 @@ export const requestJobUpdates =
     (): ApplicationThunkAction<any> =>
     (dispatch, getState) => {
         const state = getState();
-        if (!state.job.job || state.job.job.status !== JobStatus.INPROGRESS)
+        if (!state.job.job || (state.job.job.status !== JobStatus.INPROGRESS && state.job.job.status !== JobStatus.DONE))
             return Promise.resolve();
         const requestID = state.job.job.id;
+        const links = state.job.job.links;
+        const lastLinkID = links.length ? links[links.length -1].id : -1;
         const jobHub = jobHubInstanceGetter.instance(() => new JobHub(dispatch));
         return jobHub
             .tryConnect()
             .then(instance => {
                 jobHubInstanceGetter.register(instance);
-                instance.hubConnection.invoke('RequestJobUpdates', requestID, -1);
+                instance.hubConnection.invoke('RequestJobUpdates', requestID, lastLinkID);
             });
     };
 

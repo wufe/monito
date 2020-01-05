@@ -14,8 +14,6 @@ namespace Monito.Web.Integration
         public PresentationMappingProfile()
         {
             CreateMap<SaveJobInputModel, RequestOptions>();
-            CreateMap<Request, RequestWithDoneLinks>()
-                .ForMember(d => d.Links, opt => opt.MapFrom(s => s.Links.Where(x => x.Status == LinkStatus.Done)));
             CreateMap<Request, RetrieveJobOutputModel>()
                 .ForMember(d => d.Options, opt => opt.MapFrom(s => JsonConvert.DeserializeObject<RequestOptions>(s.Options)));
             CreateMap<Request, RetrieveJobStatusOutputModel>();

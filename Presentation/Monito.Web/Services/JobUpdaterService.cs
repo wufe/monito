@@ -39,7 +39,7 @@ namespace Monito.Web.Services {
 
 		public Task StartAsync(CancellationToken cancellationToken) {
 			_logger.LogInformation("Starting job updater service.");
-			_timer = new Timer(async _ => await Task.Run(SendUpdates), null, TimeSpan.Zero, TimeSpan.FromSeconds(3));
+			_timer = new Timer(async _ => await Task.Run(SendUpdates), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
 			return Task.CompletedTask;
 		}
 
@@ -56,8 +56,7 @@ namespace Monito.Web.Services {
 				foreach (var client in _clientsAccessor.Clients)
 				{
 					var links = linkService.GetDoneLinksAfterID(client.LastLinkID, client.RequestID)
-						.ToList()
-						.Select(x => _mapper.Map<Link, RetrieveLinkOutputModel>(x))
+						.ProjectTo<RetrieveLinkOutputModel>(_mapper.ConfigurationProvider)
 						.ToList();
 
 					if (links.Count > 0) {

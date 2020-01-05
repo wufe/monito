@@ -3,7 +3,7 @@
 namespace Monito.Enums
 {
     public enum JobHttpMethod {
-		GET,
-		HEAD
+		GET  = 1,
+		HEAD = 2,
 	}
 }

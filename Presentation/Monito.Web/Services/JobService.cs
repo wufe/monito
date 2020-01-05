@@ -27,7 +27,8 @@ namespace Monito.Web.Services {
 				Links = links,
 				Type = RequestType.Simple,
 				Options = options,
-				UserID = user.ID
+				UserID = user.ID,
+				Status = RequestStatus.Ready
 			};
 		}
 

@@ -27,8 +27,8 @@ create table if not exists requests (
 create table if not exists links (
 	id int not null auto_increment primary key,
     url varchar(2048),
-    status tinyint default 0, -- Idle: 0, InProgress: 1, Done: 2
-    output varchar(100),
+    status tinyint default 0, -- Idle: 0, Acknowledged: 1, InProgress: 2, Done: 3
+    output varchar(2048),
     status_code int,
     additional_data longtext,
     uuid varchar(100) unique,

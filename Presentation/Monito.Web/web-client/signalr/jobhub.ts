@@ -1,5 +1,8 @@
 import { ApplicationThunkDispatch } from '~/thunk/thunk';
 import { HubConnectionBuilder, HubConnection, HubConnectionState } from '@microsoft/signalr';
+import { LinkModel } from '~/types/link';
+import { addLinksToCurrentJob } from '~/state/actions/job-actions';
+import { store } from '~/state/store';
 
 export class JobHub {
 
@@ -8,11 +11,14 @@ export class JobHub {
 	constructor(private _dispatch: ApplicationThunkDispatch) {}
 
 	async tryConnect(): Promise<JobHub> {
-		if (this.hubConnection && this.hubConnection.state === HubConnectionState.Connected)
+		if (this.hubConnection && this.hubConnection.state === HubConnectionState.Connected) {
+			console.log('boh')
 			return this;
+		}
+			
 
 		this.hubConnection = new HubConnectionBuilder().withUrl('/jobhub').build();
-		this.hubConnection.on('RetrieveUpdatedClients', this.RetrieveUpdatedClients);
+		this.hubConnection.on('RetrieveUpdatedClients', this.RetrieveUpdatedClients.bind(this));
 		this.hubConnection.on('Error', console.log);
 
 		await this.hubConnection.start();
@@ -20,8 +26,9 @@ export class JobHub {
 		return this;
 	}
 
-	private RetrieveUpdatedClients() {
-		console.log(arguments);
+	private RetrieveUpdatedClients(links: LinkModel[]) {
+		
+		this._dispatch(addLinksToCurrentJob(links))
 	}
 
 	disconnect() {

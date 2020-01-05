@@ -17,7 +17,7 @@ namespace Monito.Domain.Service {
 
 		public IQueryable<Link> GetDoneLinksAfterID(int linkID, int requestID) =>
 			_linkRepository
-				.FindAll(x => x.RequestID == requestID && x.ID > linkID)
+				.FindAll(x => x.RequestID == requestID && x.ID > linkID && x.Status == LinkStatus.Done)
 				.OrderBy(x => x.ID)
 				.Take(100);
 	}

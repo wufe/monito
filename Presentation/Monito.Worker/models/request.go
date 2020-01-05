@@ -18,6 +18,9 @@ const (
 
 	RequestTypeSimple RequestType = 1
 	RequestTypeBatch  RequestType = 2
+
+	RequestOptionsMethodTypeGet  RequestOptionsMethodType = 1
+	RequestOptionsMethodTypeHead RequestOptionsMethodType = 2
 )
 
 type RequestStatus uint8
@@ -33,6 +36,16 @@ type Request struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Links     []Link
+}
+
+type RequestOptionsMethodType uint8
+
+type RequestOptions struct {
+	Method    RequestOptionsMethodType
+	Redirects int
+	Threads   int
+	Timeout   int
+	UserAgent string
 }
 
 func GetRequestTypeLabel(requestType RequestType) string {

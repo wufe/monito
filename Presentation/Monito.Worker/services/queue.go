@@ -2,9 +2,11 @@ package services
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/wufe/monito/worker/models"
+	"github.com/wufe/monito/worker/utils"
 )
 
 type WorkingQueue struct {
@@ -24,8 +26,24 @@ func NewWorkingQueue(orchestrator *QueueOrchestrator, queue *models.Queue, db *g
 func (workingQueue *WorkingQueue) Start() {
 
 	requestType := workingQueue.getRequestTypeByQueue()
+
 	request := <-workingQueue.orchestrator.GetRequest(requestType)
-	fmt.Println(request)
+	workingQueue.updateRequest(request)
+	workingQueue.startProcessingRequest(request)
+
+	utils.SetTimeout(workingQueue.Start, 1000)
+
+}
+
+func (workingQueue *WorkingQueue) updateRequest(request *models.Request) {
+	request.Status = models.RequestStatusInProgress
+	request.UpdatedAt = time.Now()
+	workingQueue.db.Model(&models.Request{}).
+		Update(request)
+}
+
+func (workingQueue *WorkingQueue) startProcessingRequest(request *models.Request) {
+	NewJob(request, workingQueue.db).Start()
 }
 
 func (workingQueue *WorkingQueue) getRequestTypeByQueue() models.RequestType {

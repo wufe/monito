@@ -21,7 +21,8 @@ namespace Monito.Database.Entities {
 
 	public enum LinkStatus : byte {
 		Idle = 0,
-		InProgress = 1,
-		Done = 2
+		Acknowledged = 1,
+		InProgress = 2,
+		Done = 3
 	}
 }

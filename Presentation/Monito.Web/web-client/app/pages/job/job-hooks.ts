@@ -33,7 +33,7 @@ export const useRealtimeJobUpdates = (userUUID: string, jobUUID: string) => {
 	});
 
 	useEffect(() => {
-		if (jobStatus === JobStatus.INPROGRESS) {
+		if (jobStatus === JobStatus.INPROGRESS || jobStatus === JobStatus.DONE) {
 			dispatch(requestJobUpdates());
 		}
 

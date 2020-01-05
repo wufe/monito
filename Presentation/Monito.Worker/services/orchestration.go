@@ -1,7 +1,8 @@
 package services
 
 import (
-	"fmt"
+	"time"
+
 	"github.com/jinzhu/gorm"
 	"github.com/wufe/monito/worker/models"
 	"github.com/wufe/monito/worker/utils"
@@ -19,6 +20,7 @@ func NewQueueOrchestrator(queues []*models.Queue, db *gorm.DB) *QueueOrchestrato
 		queues: queues,
 		db:     db,
 	}
+	orchestrator.resetRequests()
 	orchestrator.startRetrievalProcess()
 	orchestrator.startDequeueProcess()
 	return orchestrator
@@ -34,6 +36,15 @@ func (orchestrator *QueueOrchestrator) GetRequest(requestType models.RequestType
 	return orchestrator.enqueueRequestRetrieval(requestType)
 }
 
+// I supposedly have one orchestrator at a time,
+// so if there are requests with a pending status
+// we might need to reset them.
+func (orchestrator *QueueOrchestrator) resetRequests() {
+	orchestrator.db.Model(&models.Request{}).
+		Where(&models.Request{Status: models.RequestStatusAcknowledged}).
+		Update(map[string]interface{}{"status": models.RequestStatusReady, "updated_at": time.Now()})
+}
+
 func (orchestrator *QueueOrchestrator) startDequeueProcess() {
 	dequeueChan := make(map[models.RequestType]chan *requestRetrievalQueueItem)
 	dequeueChan[models.RequestTypeSimple] = make(chan *requestRetrievalQueueItem, 1)
@@ -46,9 +57,9 @@ func (orchestrator *QueueOrchestrator) startDequeueProcess() {
 			for {
 				queueItem := <-orchestrator.dequeueChan[requestType]
 
-				fmt.Println(fmt.Sprintf("Waiting for a request of type %s to be found", models.GetRequestTypeLabel(requestType)))
+				// fmt.Println(fmt.Sprintf("Waiting for a request of type %s to be found", models.GetRequestTypeLabel(requestType)))
 				foundRequest := <-orchestrator.availableRequestChan[requestType]
-				fmt.Println(fmt.Sprintf("Request of type %s found.", models.GetRequestTypeLabel(requestType)))
+				// fmt.Println(fmt.Sprintf("Request of type %s found.", models.GetRequestTypeLabel(requestType)))
 
 				// Return to the caller the request found
 				queueItem.returnChan <- foundRequest
@@ -63,21 +74,21 @@ func (orchestrator *QueueOrchestrator) startRetrievalProcess() {
 	availableRequestChanDictionary[models.RequestTypeSimple] = make(chan *models.Request, 1)
 	orchestrator.availableRequestChan = availableRequestChanDictionary
 
-	utils.SetInterval(orchestrator.retrievalProcess, 5000, false)
+	utils.SetInterval(orchestrator.retrievalProcess, 2000, false)
 }
 
 func (orchestrator *QueueOrchestrator) retrievalProcess() {
 
 	request := orchestrator.findRequest()
 	if request.ID == 0 {
-		fmt.Println("Not found")
+		// fmt.Println("Not found")
 	} else {
 
 		orchestrator.availableRequestChan[request.Type] <- request
-		fmt.Println(fmt.Sprintf("Found (%s)!", models.GetRequestTypeLabel(request.Type)))
+		// fmt.Println(fmt.Sprintf("Found (%s)!", models.GetRequestTypeLabel(request.Type)))
 	}
 
-	fmt.Println("Orchestrator 5s timeout")
+	// fmt.Println("Orchestrator 5s timeout")
 }
 
 type requestRetrievalQueueItem struct {
@@ -87,8 +98,6 @@ type requestRetrievalQueueItem struct {
 
 func (orchestrator *QueueOrchestrator) enqueueRequestRetrieval(requestType models.RequestType) chan *models.Request {
 	returnChan := make(chan *models.Request)
-
-	fmt.Println(fmt.Sprintf("Enqueuing a request of type %s", models.GetRequestTypeLabel(requestType)))
 	// Building a Go func in order to do not wait
 	// for the request to be enqueued.
 	// Might use buffered channel but since the traffic is not known,
@@ -99,21 +108,21 @@ func (orchestrator *QueueOrchestrator) enqueueRequestRetrieval(requestType model
 			returnChan:  returnChan,
 		}
 	}()
-	fmt.Println("Request enqueued")
 	return returnChan
 }
 
 func (orchestrator *QueueOrchestrator) findRequest() *models.Request {
 	foundRequest := models.Request{}
 
-	orchestrator.db.Debug().Model(&models.Request{}).
+	orchestrator.db.Model(&models.Request{}).
 		Where(&models.Request{Status: models.RequestStatusReady}).
 		First(&foundRequest)
 
 	if foundRequest.ID > 0 {
+
 		orchestrator.db.Model(&foundRequest).
 			Where(&models.Request{ID: foundRequest.ID}).
-			Update(map[string]interface{}{"status": models.RequestStatusAcknowledged})
+			Update(map[string]interface{}{"status": models.RequestStatusAcknowledged, "updated_at": time.Now()})
 	}
 
 	return &foundRequest
