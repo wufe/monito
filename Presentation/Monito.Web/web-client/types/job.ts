@@ -1,11 +1,13 @@
-export enum JobRequestHTTPMethod {
+import { LinkModel } from "~/types/link";
+
+export enum JobHTTPMethod {
     GET  = "GET",
     HEAD = "HEAD",
 }
 
 export type JobRequestFormFields = {
     links     : string;
-    method    : JobRequestHTTPMethod;
+    method    : JobHTTPMethod;
     redirects : number;
     threads   : number;
     timeout   : number;
@@ -17,9 +19,36 @@ export enum JobRequestType {
     BATCH  = "Batch",
 }
 
-export enum JobRequestStatus {
-    INCOMPLETE = "Incomplete",
-    READY      = "Ready",
-    INPROGRESS = "InProgress",
-    DONE       = "Done",
+export enum JobStatus {
+    INCOMPLETE   = "Incomplete",
+    READY        = "Ready",
+    ACKNOWLEDGED = "Acknowledged",
+    INPROGRESS   = "InProgress",
+    DONE         = "Done",
 }
+
+// #region Responses
+export type SaveJobResponse = {
+    userUUID: string;
+    requestUUID: string;
+}
+
+export type JobStatuModel = {
+    status   : JobStatus;
+    updatedAt: string;
+}
+
+export type JobModel = JobStatuModel & {
+    id       : number;
+    type     : JobRequestType;
+    createdAt: string;
+    links    : LinkModel[];
+    options  : {
+        method   : JobHTTPMethod;
+        redirects: number;
+        threads  : number;
+        timeout  : number;
+        userAgent: string;
+    }
+}
+// #endregion

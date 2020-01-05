@@ -1,5 +1,5 @@
 import * as React from "react";
-import { setLoadingActionBuilder } from "~/state/action";
+import { setLoadingActionBuilder } from "~/state/actions/application-actions";
 
 export const APPLICATION_NAME = "Mònito";
 

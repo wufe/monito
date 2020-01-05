@@ -52,6 +52,16 @@ namespace Monito.Web.Controllers.API {
 				return new JsonResult(_jobService.BuildJobOutputModelFromRequest(request));
 			}
 		}
+
+		[HttpGet("{userUUID:guid}/{requestUUID:guid}/status")]
+		public IActionResult RetrieveJobStatus(Guid userUUID, Guid requestUUID) {
+			var request = _requestService.FindByGuid(requestUUID);
+			if (request == null) {
+				return NotFound();
+			} else {
+				return new JsonResult(_jobService.BuildJobStatusOutputModelFromRequest(request));
+			}
+		}
 	}
 
 }

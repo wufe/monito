@@ -19,9 +19,10 @@ export const App = () => {
     return <div className="app__component">
         <LoadingBarContainer />
         <Navbar />
-        <Hero />
+        
         <Switch>
             <Route exact path="/">
+                <Hero />
                 <React.Suspense fallback="">
                     <HomePage />
                 </React.Suspense>

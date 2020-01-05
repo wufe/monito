@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Monito.Web.Extensions;
+using Monito.Web.Hubs;
 using Monito.Web.Integration;
 
 namespace Monito.Web
@@ -22,6 +23,7 @@ namespace Monito.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR(conf => conf.EnableDetailedErrors = true);
             services.AddControllersWithViews();
             services.AddHttpUtils();
             services.AddDatabase(Configuration.GetSection("ConnectionString").Value);
@@ -56,6 +58,7 @@ namespace Monito.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<JobHub>("/jobhub");
             });
         }
     }

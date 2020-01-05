@@ -16,6 +16,11 @@ namespace Monito.Repository.EFCore
             _context = context;
         }
 
+		public IQueryable<T> AsNoTracking() =>
+			_context
+				.Set<T>()
+				.AsNoTracking();
+
 		public T Find(int ID) =>
             _context
 				.Set<T>()

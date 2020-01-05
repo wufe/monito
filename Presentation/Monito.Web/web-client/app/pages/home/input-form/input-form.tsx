@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './input-form.scss';
-import { JobRequestFormFields, JobRequestHTTPMethod } from '~/types/job';
+import { JobRequestFormFields, JobHTTPMethod } from '~/types/job';
 
 type Props = {
     onSubmit: (fields: JobRequestFormFields) => any;
@@ -13,7 +13,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
 
     const [fields, setFields] = React.useState<JobRequestFormFields>({
         links: '',
-        method: JobRequestHTTPMethod.HEAD,
+        method: JobHTTPMethod.HEAD,
         redirects: 5,
         threads: 4,
         timeout: 10000,
@@ -92,7 +92,7 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                                 disabled={props.disabled}
                                 onChange={e => setField('method')(e.target.value)}
                                 value={fields.method} >
-                                {Object.keys(JobRequestHTTPMethod)
+                                {Object.keys(JobHTTPMethod)
                                     .map(m => <option key={m} value={m}>{m}</option>)}
                             </select>
                         </div>

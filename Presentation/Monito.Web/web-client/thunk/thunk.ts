@@ -1,6 +1,8 @@
-import { ThunkAction } from "redux-thunk";
-import { ApplicationState } from "~/state/state";
+import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { GlobalState } from "~/state/state";
 import { AnyAction, Action } from "redux";
 
 export type ApplicationThunkAction<R = any> =
-    ThunkAction<R, ApplicationState, unknown, AnyAction>;
+    ThunkAction<Promise<R>, GlobalState, unknown, AnyAction>;
+
+export type ApplicationThunkDispatch = ThunkDispatch<GlobalState, unknown, Action>;

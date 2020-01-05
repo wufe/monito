@@ -55,10 +55,7 @@ namespace Monito.Database.EFCore
                 entity.HasKey(x => x.ID);
 
                 entity.ToTable("links");
-
-                entity
-                    .Property(x => x.OriginalURL)
-                    .HasColumnName("original_url");
+                
                 entity
                     .Property(x => x.StatusCode)
                     .HasColumnName("status_code");

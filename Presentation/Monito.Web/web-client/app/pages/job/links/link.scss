@@ -1,0 +1,141 @@
+@import "~/styles/main";
+
+$status-color-302: darken($nord13, 10%);
+$status-color-200: darken($nord14, 14%);
+
+.link__component {
+	padding: 10px auto;
+	
+	.__content {
+		position: relative;
+		padding: 0 15px;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		height: 60px;
+		font-size: .9rem;
+		border-radius: 3px;
+		cursor: pointer;
+
+		font-weight: 100;
+		letter-spacing: .05em;
+		transition: background-color linear .1s;
+
+		@media(prefers-color-scheme: dark) {
+			color: $nord4;
+			background-color: $nord2;
+			box-shadow: 0 1px 0 rgba($nord0, .5),
+				1px 0 0 rgba($nord0, .5),
+				0 -1px 0 rgba($nord0, .2),
+				-1px 0 0 rgba($nord0, .2),
+				inset 0 1px 0 rgba($nord5, .1),
+				inset 1px 0 0 rgba($nord5, .1);
+
+			&:hover {
+				background-color: $nord3;
+			}
+		}
+
+		.__status-outline {
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			width: 5px;
+			border-radius: 3px 0 0 3px;
+			box-shadow: 1px 0 0 rgba($nord0, .5),
+				inset 0 1px 0 rgba($nord5, .4),
+				inset 1px 0 0 rgba($nord5, .4);
+
+			&.--code200 {
+				background-color: $status-color-200;
+			}
+
+			&.--code302 {
+				background-color: $status-color-302;
+			}
+		}
+
+		.__row {
+
+			width: 100%;
+			display: grid;
+			grid-template-columns: 70px 1fr 3fr minmax(160px, 1fr) 60px;
+			align-items: center;
+			font-size: .8rem;
+			height: 24px;
+
+			@include small-only {
+				grid-template-columns: 70px 1fr 60px;
+
+				.__link-id-header, .__status-header {
+					display: none;
+				}
+
+				.__link-id, .__status {
+					display: none;
+				}
+			}
+
+			color: $nord0;
+			@media (prefers-color-scheme: dark) {
+				color: $nord6;
+			}
+
+			&.--header {
+				font-size: .7rem;
+				height: 22px;
+
+				color: $nord2;
+				@media (prefers-color-scheme: dark) {
+					color: darken($nord4, 10%);
+				}
+			}
+
+			> * {
+				white-space: nowrap;
+				// outline: 1px dashed $nord1;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				padding: 0 10px;
+				color: inherit;
+				
+			}
+
+			.__code-header {
+				text-align: center;
+			}
+
+			.__link-id, .__time {
+				font-size: .7rem;
+
+				&.__time {
+					text-align: center;
+				}
+
+				@media (prefers-color-scheme: dark) {
+					color: darken($nord4, 15%);
+					text-shadow: 0 0 1px $nord0;
+				}
+			}
+
+			.__status {
+				font-size: .8rem;
+			}
+
+			.__code {
+				font-size: .8rem;
+				text-align: center;
+				font-weight: bold;
+
+				&.--code200 {
+					color: $status-color-200;
+				}
+				&.--code302 {
+					color: $status-color-302;
+				}
+			}
+		}
+	}
+}

@@ -21,7 +21,11 @@ export const LogBox = (props: React.PropsWithChildren<Props>) => {
 		<div className="__content">
 			<Scrollbars
 				ref={scrollableContent}
-				style={{ width: "100%", height: 200 }}>
+				renderThumbVertical={props => <div {...props} className="__vertical-thumb"></div>}
+				style={{
+					width: "100%",
+					height: 140
+				}}>
 				{props.messages.map((message, index) => <div className="__message" key={index}>
 					{message}
 				</div>)}

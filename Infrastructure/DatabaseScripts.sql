@@ -17,6 +17,7 @@ create table if not exists requests (
     type tinyint default 1, -- Simple: 1, Batch: 2
     options longtext,
     status tinyint default 0, -- Incomplete: 0, Ready: 1, InProgress: 2, Done: 3
+    uuid varchar(100) unique,
     created_at datetime,
     updated_at datetime,
     user_id int,
@@ -26,9 +27,11 @@ create table if not exists requests (
 create table if not exists links (
 	id int not null auto_increment primary key,
     url varchar(2048),
-    original_url varchar(2048),
+    status tinyint default 0, -- Idle: 0, InProgress: 1, Done: 2
+    output varchar(100),
     status_code int,
     additional_data longtext,
+    uuid varchar(100) unique,
     created_at datetime,
     updated_at datetime,
     redirects_from_link_id int null,
@@ -51,6 +54,7 @@ create table if not exists workers (
 	id int not null auto_increment primary key,
     hostname varchar(1000),
     uuid varchar(100) unique,
+    ping datetime,
     created_at datetime,
     updated_at datetime
 );
@@ -59,6 +63,9 @@ create table if not exists queues (
 	id int not null auto_increment primary key,
     type tinyint default 1, -- Basic: 1, Priority: 2, Simple: 3
     status tinyint default 0, -- Idle: 0, Busy: 1, Offline: 2
+    uuid varchar(100) unique,
+    created_at datetime,
+    updated_at datetime,
     worker_id int,
     foreign key (worker_id) references workers(id)
 );

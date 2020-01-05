@@ -10,9 +10,6 @@
 		color: #222;
 		font-weight: normal;
 		padding: 15px 0 20px 0;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-end;
 
 		@media (prefers-color-scheme: dark) {
 			color: #CCC;
@@ -20,18 +17,32 @@
 		}
 
 		.__message {
-			padding: 5px 25px 5px 25px;
-			// transform: scaleY(.93);
-			// letter-spacing: .1em;
-			font-family: 'Source Code Pro', monospace;
-			font-size: .74rem;
+			padding: 10px 25px 10px 25px;
+			font-family: 'Montserrat', monospace;
+			font-size: .7rem;
+			margin: 3px 15px;
+			letter-spacing: .05em;
 
 			&:last-child {
 				background-color: #E0E0E0;
+				border-radius: 3px;
 				@media (prefers-color-scheme: dark) {
-					background-color: #2A2A2A;
+					background-color: $nord0;
+					box-shadow: inset -1px 0 0 rgba($nord6, .3),
+						inset 0 -1px 0 rgba($nord6, .2),
+						inset 1px 0 0 rgba(black, .1),
+						inset 0 1px 0 rgba(black, .1);
 				}
 			}
+		}
+
+		.__vertical-thumb {
+			background-color: $nord0;
+			box-shadow: inset -1px 0 0 rgba($nord6, .2),
+				inset 0 -1px 0 rgba($nord6, .1),
+				inset 1px 0 0 rgba(black, .1),
+				inset 0 1px 0 rgba(black, .1);
+			border-radius: 3px;
 		}
 	}
 
@@ -43,6 +54,6 @@
 		bottom: 0;
 		right: 0;
 		pointer-events: none;
-		background: linear-gradient(0deg, rgba(black, 0) 0%, rgba(black, .6) 50%, rgba(black, .7) 100%);
+		background: linear-gradient(0deg, rgba(25, 28, 34, .0) 0%, rgba(25, 28, 34, 0.4) 90%, rgba(25, 28, 34, 0.5) 100%);
 	}
 }

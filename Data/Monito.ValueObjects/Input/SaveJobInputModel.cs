@@ -5,7 +5,6 @@ using Monito.Enums;
 namespace Monito.ValueObjects {
 	public class SaveJobInputModel {
 
-		[Required]
 		public string Links { get; set; }
 
 		[Required]

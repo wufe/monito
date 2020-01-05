@@ -3,7 +3,8 @@ import './hero.scss';
 import FloorAnimation from '@wufe/floor-animation';
 
 export const Hero = () => <div className="hero__component">
-    <FloorAnimation yaw={2.4} color="#000" />
+    {/* <FloorAnimation yaw={2.9} color="#3b4252" /> */}
+    <div className="__overlay"></div>
     <div className="__content">
         <div className="__title">
             Free link status checker.

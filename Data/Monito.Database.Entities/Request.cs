@@ -23,9 +23,10 @@ namespace Monito.Database.Entities {
 	}
 
 	public enum RequestStatus : byte {
-		Incomplete = 0,
-		Ready      = 1,
-		InProgress = 2,
-		Done       = 3
+		Incomplete   = 0,
+		Ready        = 1,
+		Acknowledged = 2,
+		InProgress   = 3,
+		Done         = 4
 	}
 }

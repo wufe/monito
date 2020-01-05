@@ -15,9 +15,14 @@
         border-color: #D1D1D1;
 
         @media (prefers-color-scheme: dark) {
-            background: #555;
-            border-color: #5A5A5A;
-            color: white;
+            background: $nord2;
+            // border-color: $nord0;
+            border-width: 0;
+            box-shadow: -1px 0 0 rgba(black, .1),
+						0 -1px 0 rgba(black, .1),
+						1px 0 0 rgba(black, .2),
+						0 1px 0 rgba(black, .2);
+            color: $nord6;
         }
 
         p {

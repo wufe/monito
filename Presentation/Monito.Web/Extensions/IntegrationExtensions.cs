@@ -17,6 +17,11 @@ namespace Monito.Web.Extensions {
 				.AddScoped<IHttpRequestService, HttpRequestService>();
 			services
 				.AddScoped<ISpaService, SpaService>();
+			services
+				.AddScoped<IJobUpdaterService, JobUpdaterService>();
+
+			services
+				.AddSingleton<IUpdatingClientsAccessor, UpdatingClientsAccessor>();
 		}
 	}
 }

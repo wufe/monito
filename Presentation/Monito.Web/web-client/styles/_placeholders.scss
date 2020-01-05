@@ -47,18 +47,23 @@
         }
 
         @media (prefers-color-scheme: dark) {
-            background: darken($nord14, 20%);
-            border-color: darken($nord14, 25%);
+            background: $nord14;
+            color: $nord0;
+            text-shadow: none;
+            // background: darken($nord14, 20%);
+            // border-color: darken($nord14, 25%);
+            border-width: 0;
+            box-shadow: 0 0 5px rgba(black, .2);
 
             &:hover {
-                background: darken($nord14, 13%);
-                border-color: darken($nord14, 20%);
+                background: lighten($nord14, 5%);
+                // border-color: darken($nord14, 20%);
             }
         
             &:active {
-                background: darken($nord14, 23%);
+                background: darken($nord14, 15%);
                 border-color: darken($nord14, 30%);
-                box-shadow: inset 0 0 8px rgba(#555, .7);
+                box-shadow: inset 0 0 8px rgba($nord0, .4);
             }
         }
     }

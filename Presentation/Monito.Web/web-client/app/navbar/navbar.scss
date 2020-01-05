@@ -3,14 +3,27 @@
 .navbar__component {
 
     width: 100%;
+    background: linear-gradient(0deg, rgba(25, 28, 34, .5) 0%, rgba(25, 28, 34, 1) 100%);
 
     .__container {
         @include container;
         min-height: 100px;
         line-height: 100px;
         font-size: 2.5rem;
+        font-weight: 100;
+        padding: 0px 20px;
+        user-select: none;
 
         color: #323232;
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        span {
+            cursor: pointer;
+        }
 
         @include small-only {
             text-align: center;

@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using Monito.Database.Entities;
 using Monito.ValueObjects;
+using Monito.ValueObjects.Output;
 using Monito.Web.Services.Interface;
 using Newtonsoft.Json;
 
@@ -18,9 +19,9 @@ namespace Monito.Web.Services {
 
 		public Request BuildRequest(SaveJobInputModel inputModel, User user)
 		{
-			var links = BuildLinksFromModel(inputModel);
-
 			var options = BuildOptionsStringFromModel(inputModel);
+
+			var links = BuildLinksFromJobModel(inputModel);
 
 			return new Request() {
 				Links = links,
@@ -30,10 +31,12 @@ namespace Monito.Web.Services {
 			};
 		}
 
-		private ICollection<Link> BuildLinksFromModel(SaveJobInputModel inputModel) {
-			return inputModel.Links.Split('\n')
-				.Select(link => new Link() {
-					OriginalURL = link.Trim()
+		private ICollection<Link> BuildLinksFromJobModel(SaveJobInputModel inputModel) {
+			return (inputModel.Links ?? "")
+				.Split('\n')
+				.Select(x => new Link() {
+					Status = LinkStatus.Idle,
+					URL = x.Trim()
 				})
 				.ToList();
 		}
@@ -45,6 +48,11 @@ namespace Monito.Web.Services {
 
 		public RetrieveJobOutputModel BuildJobOutputModelFromRequest(Request request) {
 			return _mapper.Map<Request, RetrieveJobOutputModel>(request);
+		}
+
+		public RetrieveJobStatusOutputModel BuildJobStatusOutputModelFromRequest(Request request)
+		{
+			return _mapper.Map<Request, RetrieveJobStatusOutputModel>(request);
 		}
 	}
 }

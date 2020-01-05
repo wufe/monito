@@ -22,9 +22,11 @@ namespace Monito.Web.Integration {
 
 		public static void AddDomainServices(this IServiceCollection services) {
 			services
-				.AddScoped<IUserService, UserService>();
+				.AddScoped<ILinkService, LinkService>();
 			services
 				.AddScoped<IRequestService, RequestService>();
+			services
+				.AddScoped<IUserService, UserService>();
 		}
 
 		public static void AddRepositories(this IServiceCollection services) {
