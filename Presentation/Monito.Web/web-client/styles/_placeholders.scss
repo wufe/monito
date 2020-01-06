@@ -3,9 +3,9 @@
 %button {
     font-family: inherit;
     font-size: .9rem;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    transform: scaleY(.91);
+    // text-transform: uppercase;
+    // letter-spacing: .1em;
+    // transform: scaleY(.91);
     padding: 10px 35px;
     border-radius: 3px;
     border-style: solid;
@@ -30,42 +30,39 @@
     }
 
     &.--success {
-        color: white;
-        text-shadow: 0 0 2px rgba(black, .8);
-        background: darken($nord14, 10%);
-        border-color: darken($nord14, 15%);
+
+        background: $nord14;
+        color: $nord0;
+        text-shadow: none;
+        border-width: 0;
+        box-shadow: 0 0 5px rgba(black, .2);
 
         &:hover {
-            background: darken($nord14, 3%);
-            border-color: darken($nord14, 10%);
+            background: lighten($nord14, 5%);
         }
     
         &:active {
-            background: darken($nord14, 13%);
-            border-color: darken($nord14, 20%);
-            box-shadow: inset 0 0 8px rgba(#555, .7);
+            background: darken($nord14, 15%);
+            border-color: darken($nord14, 30%);
+            box-shadow: inset 0 0 8px rgba($nord0, .4);
+        }
+    }
+
+    &.--dark {
+
+        background: $nord1;
+        color: $nord6;
+        border-width: 0;
+        box-shadow: 0 0 8px rgba($nord0, .3),
+            inset -1px 0 0 rgba($nord6, .1),
+			inset 0 -1px 0 rgba($nord6, .05),
+			inset 1px 0 0 rgba($nord6, .05),
+			inset 0 1px 0 rgba($nord6, .05);
+
+        &:hover {
+            background: $nord2;
         }
 
-        @media (prefers-color-scheme: dark) {
-            background: $nord14;
-            color: $nord0;
-            text-shadow: none;
-            // background: darken($nord14, 20%);
-            // border-color: darken($nord14, 25%);
-            border-width: 0;
-            box-shadow: 0 0 5px rgba(black, .2);
-
-            &:hover {
-                background: lighten($nord14, 5%);
-                // border-color: darken($nord14, 20%);
-            }
-        
-            &:active {
-                background: darken($nord14, 15%);
-                border-color: darken($nord14, 30%);
-                box-shadow: inset 0 0 8px rgba($nord0, .4);
-            }
-        }
     }
 }
 

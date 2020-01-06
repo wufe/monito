@@ -14,6 +14,7 @@ namespace Monito.ValueObjects.Output {
 
 		[JsonConverter(typeof(JsonStringEnumConverter))]
 		public RequestStatus Status { get; set; }
+		public int? LinksCount { get; set; }
 		
 		public ICollection<RetrieveLinkOutputModel> Links { get; set; }
 		

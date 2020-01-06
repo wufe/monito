@@ -8,6 +8,7 @@ export enum JobActions {
 	SetStatusPolling     = '@@Job/SetStatusPolling',
 	SetJobStatus         = '@@Job/SetStatus',
 	AddLinksToCurrentJob = '@@Job/AddLinksToCurrentJob',
+	ResetJob             = '@@Job/ResetJob',
 }
 
 export const addLogMessageActionBuilder = (message: string): AnyAction => ({
@@ -33,4 +34,8 @@ export const setJobStatus = (status: JobStatus): AnyAction => ({
 export const addLinksToCurrentJob = (links: LinkModel[]): AnyAction => ({
 	type: JobActions.AddLinksToCurrentJob,
 	payload: links
+});
+
+export const resetJob = (): AnyAction => ({
+	type: JobActions.ResetJob
 });

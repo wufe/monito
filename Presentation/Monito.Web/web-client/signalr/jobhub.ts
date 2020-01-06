@@ -3,6 +3,7 @@ import { HubConnectionBuilder, HubConnection, HubConnectionState } from '@micros
 import { LinkModel } from '~/types/link';
 import { addLinksToCurrentJob } from '~/state/actions/job-actions';
 import { store } from '~/state/store';
+import { updateLinks } from '~/thunk/job-thunk';
 
 export class JobHub {
 
@@ -11,15 +12,13 @@ export class JobHub {
 	constructor(private _dispatch: ApplicationThunkDispatch) {}
 
 	async tryConnect(): Promise<JobHub> {
-		if (this.hubConnection && this.hubConnection.state === HubConnectionState.Connected) {
-			console.log('boh')
-			return this;
-		}
-			
 
-		this.hubConnection = new HubConnectionBuilder().withUrl('/jobhub').build();
+		if (this.hubConnection && this.hubConnection.state === HubConnectionState.Connected) {
+			await this.disconnect();
+		}
+
+		this.hubConnection = new HubConnectionBuilder().withUrl('/jobhub').configureLogging("critical").build();
 		this.hubConnection.on('RetrieveUpdatedClients', this.RetrieveUpdatedClients.bind(this));
-		this.hubConnection.on('Error', console.log);
 
 		await this.hubConnection.start();
 
@@ -28,7 +27,7 @@ export class JobHub {
 
 	private RetrieveUpdatedClients(links: LinkModel[]) {
 		
-		this._dispatch(addLinksToCurrentJob(links))
+		this._dispatch(updateLinks(links))
 	}
 
 	disconnect() {

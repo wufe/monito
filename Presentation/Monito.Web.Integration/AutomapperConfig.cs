@@ -17,11 +17,13 @@ namespace Monito.Web.Integration
             CreateMap<Request, RetrieveJobOutputModel>()
                 .ForMember(d => d.Options, opt => opt.MapFrom(s => JsonConvert.DeserializeObject<RequestOptions>(s.Options)));
             CreateMap<Request, RetrieveJobStatusOutputModel>();
-            CreateMap<Link, RetrieveLinkOutputModel>()
+            CreateMap<Link, RetrieveBriefLinkOutputModel>()
                 .ForMember(d => d.RedirectsToLinkId, opt =>
                     opt.MapFrom(s =>
                         s.RedirectsTo != null ? s.RedirectsTo.ID : default(int?)))
                 .ForMember(d => d.URL, opt => opt.MapFrom(s => s.URL));
+            CreateMap<Link, RetrieveLinkOutputModel>()
+                .IncludeBase<Link, RetrieveBriefLinkOutputModel>();
         }
     }
 

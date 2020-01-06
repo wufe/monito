@@ -157,7 +157,7 @@ func NewHTTPRequest(stackItem *HTTPRequestLinkedList) *HTTPRequestLinkedList {
 		return stackItem
 	} else {
 		stackItem.Response = response
-		if response.StatusCode == 301 || response.StatusCode == 302 {
+		if response.StatusCode == 301 || response.StatusCode == 302 || response.StatusCode == 307 || response.StatusCode == 308 {
 			var followRedirect = stackItem.MaxRedirects > stackItem.CurrentRedirect
 			if followRedirect {
 				fmt.Println(fmt.Sprintf("Following redirect [%s] -> [%s]", stackItem.URL, response.Header.Get("Location")))

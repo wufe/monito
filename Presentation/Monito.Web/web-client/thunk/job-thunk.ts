@@ -4,8 +4,9 @@ import { push } from "connected-react-router";
 import { ApplicationThunkAction } from "~/thunk/thunk";
 import { JobRequestFormFields, SaveJobResponse, JobModel, JobStatuModel, JobStatus } from "~/types/job";
 import { setLoadingActionBuilder } from "~/state/actions/application-actions";
-import { addLogMessageActionBuilder, setJobActionBuilder, setStatusPolling, setJobStatus } from "~/state/actions/job-actions";
+import { addLogMessageActionBuilder, setJobActionBuilder, setStatusPolling, setJobStatus, addLinksToCurrentJob } from "~/state/actions/job-actions";
 import { jobHubInstanceGetter, JobHub } from '~/signalr/jobhub';
+import { LinkModel } from '~/types/link';
 
 export const getStatusLabel = (status: string) => {
     let label: string = "Waiting (queued)";
@@ -48,6 +49,8 @@ export const loadJobThunk = (userUUID: string, jobUUID: string): ApplicationThun
                 if (data.status === JobStatus.INCOMPLETE ||
                     data.status === JobStatus.READY) {
                     dispatch(setStatusPolling(true));
+                } else if (data.status === JobStatus.INPROGRESS) {
+                    dispatch(requestJobUpdates())
                 }
                 return data;
             })
@@ -71,14 +74,18 @@ export const refreshJobStatusThunk =
             .then(({data}) => {
                 const newStatus = data.status;
                 const savedJob = state.job.job;
+                const oldStatus = savedJob.status;
                 if (savedJob) {
-                    if (savedJob.status !== newStatus) {
+                    if (oldStatus !== newStatus) {
                         dispatch(addLogMessageActionBuilder(`Status: ${getStatusLabel(newStatus)}`));
                         dispatch(setJobStatus(newStatus));
+                        if (newStatus === JobStatus.INPROGRESS || newStatus === JobStatus.DONE)
+                            dispatch(requestJobUpdates());
                     }
                 }
                 if (newStatus !== JobStatus.INCOMPLETE &&
-                    newStatus !== JobStatus.READY) {
+                    newStatus !== JobStatus.READY &&
+                    newStatus !== JobStatus.INPROGRESS) {
                     dispatch(setStatusPolling(false));
                 }
                 return data;
@@ -103,9 +110,33 @@ export const requestJobUpdates =
             });
     };
 
+export const updateLinks =
+    (links: LinkModel[]): ApplicationThunkAction<any> =>
+    (dispatch, getState) => {
+        dispatch(addLinksToCurrentJob(links));
+        const state = getState();
+        if (!state.job.job)
+            return Promise.resolve();
+        if (state.job.job.links.length > 10000)
+            dispatch(deactivateJobUpdatesStream());
+    };
+
+
 export const deactivateJobUpdatesStream =
     (): ApplicationThunkAction<any> =>
     dispatch => {
         jobHubInstanceGetter.disconnect();
         return Promise.resolve();
+    };
+
+export const downloadCSV =
+    (userUUID: string, jobUUID: string): ApplicationThunkAction<any> =>
+    (dispatch, getState) => {
+        const url  = `/api/job/${userUUID}/${jobUUID}/download/csv`;
+        return new Promise(resolve => {
+            setTimeout(() => {
+                window.open(url);
+                resolve();
+            }, 2000);
+        });
     };

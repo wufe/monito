@@ -1,7 +1,31 @@
 @import "~/styles/main";
 
-$status-color-302: darken($nord13, 10%);
-$status-color-200: darken($nord14, 14%);
+$status-map: (
+	xxx: darken($nord0, 10%),
+	200: darken($nord14, 14%),
+	2xx: darken($nord14, 0%),
+	301: darken($nord13, 10%),
+	302: darken($nord13, 10%),
+	307: darken($nord13, 10%),
+	308: darken($nord13, 10%),
+	3xx: darken($nord13, 0%),
+	400: darken($nord12, 10%),
+	401: darken($nord12, 5%),
+	403: darken($nord12, 5%),
+	404: darken($nord12, 20%),
+	408: darken($nord15, 5%),
+	429: darken($nord15, 15%),
+	4xx: darken($nord12, 0%),
+	500: darken($nord11, 20%),
+	502: darken($nord11, 15%),
+	503: darken($nord11, 20%),
+	504: darken($nord15, 5%),
+	5xx: darken($nord11, 0%)
+
+);
+
+// $status-color-302: darken($nord13, 10%);
+// $status-color-200: darken($nord14, 14%);
 
 .link__component {
 	padding: 10px auto;
@@ -48,12 +72,10 @@ $status-color-200: darken($nord14, 14%);
 				inset 0 1px 0 rgba($nord5, .4),
 				inset 1px 0 0 rgba($nord5, .4);
 
-			&.--code200 {
-				background-color: $status-color-200;
-			}
-
-			&.--code301, &.--code302 {
-				background-color: $status-color-302;
+			@each $code, $color in $status-map {
+				&.--code#{$code} {
+					background-color: $color;
+				}
 			}
 		}
 
@@ -112,6 +134,7 @@ $status-color-200: darken($nord14, 14%);
 
 				&.__time {
 					text-align: center;
+					padding: 0;
 				}
 
 				@media (prefers-color-scheme: dark) {
@@ -128,12 +151,12 @@ $status-color-200: darken($nord14, 14%);
 				font-size: .8rem;
 				text-align: center;
 				font-weight: bold;
+				text-shadow: 0 0 3px rgba($nord0, .9);
 
-				&.--code200 {
-					color: $status-color-200;
-				}
-				&.--code301, .--code302 {
-					color: $status-color-302;
+				@each $code, $color in $status-map {
+					&.--code#{$code} {
+						color: $color;
+					}
 				}
 			}
 		}

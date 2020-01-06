@@ -1,7 +1,16 @@
 using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Monito.Database.Entities;
 using Monito.Domain.Service.Interface;
 using Monito.ValueObjects;
+using Monito.Web.Extensions;
+using Monito.Web.Models;
 using Monito.Web.Services.Interface;
 
 namespace Monito.Web.Controllers.API {
@@ -13,18 +22,21 @@ namespace Monito.Web.Controllers.API {
 		private readonly IHttpRequestService _httpRequestService;
 		private readonly IRequestService _requestService;
 		private readonly IUserService _userService;
+		private readonly ILogger<JobController> _logger;
 
 		public JobController(
 			IJobService jobService,
 			IHttpRequestService httpRequestService,
 			IRequestService requestService,
-			IUserService userService
+			IUserService userService,
+			ILogger<JobController> logger
 		)
 		{
 			_jobService         = jobService;
 			_httpRequestService = httpRequestService;
 			_requestService     = requestService;
 			_userService        = userService;
+			_logger             = logger;
 		}
 
 		[HttpPost("save")]
@@ -49,7 +61,8 @@ namespace Monito.Web.Controllers.API {
 			if (request == null) {
 				return NotFound();
 			} else {
-				return new JsonResult(_jobService.BuildJobOutputModelFromRequest(request));
+				var linksCount = _requestService.GetLinksCountByRequestId(request.ID);
+				return new JsonResult(_jobService.BuildJobOutputModelFromRequest(request, linksCount));
 			}
 		}
 
@@ -61,6 +74,29 @@ namespace Monito.Web.Controllers.API {
 			} else {
 				return new JsonResult(_jobService.BuildJobStatusOutputModelFromRequest(request));
 			}
+		}
+
+		[HttpGet("{userUUID:guid}/{requestUUID:guid}/download/csv")]
+		public IActionResult DownloadJobAsCSV(Guid userUUID, Guid requestUUID)
+		{
+			var request = _requestService.FindByGuid(requestUUID, false);
+			if (request == null || request.Status != RequestStatus.Done)
+			{
+				return NotFound();
+			}
+
+			var links = _jobService.GetLinksForDownloadByRequestID(request.ID);
+
+			return new FileCallbackResult(new MediaTypeHeaderValue("text/csv"), async (outputStream, _) =>
+			{
+				var writer = new StreamWriter(HttpContext.Response.Body);
+				var csv = new CsvWriter(writer);
+				csv.WriteRecords(links);
+				await writer.FlushAsync();
+			})
+			{
+				FileDownloadName = "links.csv"
+			};
 		}
 	}
 

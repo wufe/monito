@@ -1,0 +1,222 @@
+@import "~/styles/main";
+
+.actions__component {
+	.__content {
+		@include container;
+
+		margin: 10px auto 20px auto;
+		padding: 15px 20px;
+
+		border-radius: 3px;
+
+		background-color: $nord0;
+		box-shadow: inset -1px 0 0 rgba($nord6, .2),
+			inset 0 -1px 0 rgba($nord6, .1),
+			inset 1px 0 0 rgba(black, .1),
+			inset 0 1px 0 rgba(black, .1);
+		
+		display: flex;
+		justify-content: space-evenly;
+
+		@include small-only {
+			flex-direction: column;
+		}
+
+		color: $nord6;
+		font-weight: 100;
+
+		font-size: .9rem;
+
+		.__messages {
+			@include medium-up {
+				flex-grow: 0;
+				flex-shrink: 0;
+				flex-basis: 60%;
+				width: 60%;
+			}
+
+			display: flex;
+			flex-grow: 1;
+			flex-direction: column;
+			justify-content: center;
+
+			.__message {
+
+				flex-grow: 1;
+
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+
+				margin: 10px;
+				padding: 10px 15px;
+				border-radius: 3px;
+	
+				font-size: .8rem;
+				cursor: default;
+				line-height: 1.2rem;
+	
+	
+				&.--info {
+	
+					background-color: lighten($nord13, 2%);
+					color: $nord1;
+					font-weight: normal;
+	
+	
+					box-shadow: inset -1px 0 0 rgba($nord6, .5),
+						inset 0 -1px 0 rgba($nord6, .5),
+						inset 1px 0 0 rgba($nord6, .2),
+						inset 0 1px 0 rgba($nord6, .2),
+						1px 0 0 rgba(black, .1),
+						0 1px 0 rgba(black, .1),
+						-1px 0 0 rgba(black, .1),
+						0 -1px 0 rgba(black, .1);
+				}
+			}
+		}
+
+		
+
+		.__actions {
+
+			@include medium-up {
+				flex-grow: 0;
+				flex-shrink: 0;
+				flex-basis: 35%;
+				width: 35%;
+			}
+
+			font-weight: normal;
+			font-size: .8rem;
+
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+
+			@include small-only {
+				align-items: stretch;
+				justify-content: flex-start;
+			}
+
+			> * {
+				margin: 8px 0 8px 0;
+
+				&:last-child {
+					margin-top: 0px;
+				}
+			}
+
+			.__button-container {
+				width: 100%;
+
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+
+				background: darken($nord0, 4%);
+				border-radius: 3px;
+				box-shadow: 1px 0 0 rgba(black, .3),
+					0 1px 0 rgba(black, .3);
+
+				.__description {
+					transition-property: height, max-height;
+					transition-timing-function: ease-out;
+					transition-duration: .15s;
+				}
+
+				&:not(.--open) {
+					.__description {
+						max-height: 0px;
+						height: 0px;
+					}
+				}
+
+				&.--open {
+					.__description {
+						max-height: 35px;
+						height: 35px;
+					}
+				}
+
+				.__button {
+					@extend %button;
+					
+					text-align: center;
+					font-weight: inherit;
+					font-size: inherit;
+					transform: none;
+				}
+
+				.__description {
+					overflow: hidden;
+					flex-grow: 1;
+					text-align: center;
+					color: darken($nord4, 10%);
+					text-shadow: 0 0 3px rgba(black, .9);
+					font-weight: 100;
+					cursor: default;
+					border-radius: 0 0 3px 3px;
+					
+					display: flex;
+					align-items: center;
+					justify-content: center;
+
+					box-shadow: inset 1px 0 0 rgba($nord6, .08),
+						inset 0 -1px 0 rgba(black, .1),
+						inset 0 0 15px rgba(black, .15);
+				}
+			}
+
+			
+		}
+
+		.__avatar-container {
+			@include small-only {
+				display: none;
+			}
+
+			max-height: 150px;
+			height: 150px;
+			padding: 20px 0;
+
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+
+			> img {
+				height: 100%;
+				max-height: 100%;
+			}
+
+			.__speech-bubble {
+				position: relative;
+				background: $nord5;
+				border-radius: .4em;
+				color: $nord3;
+				margin: 0 20px 20px 20px;
+				padding: 10px 20px;
+				font-size: 1rem;
+				font-weight: bold;
+				display: inline-flex;
+				
+				&::after {
+					content: '';
+					position: absolute;
+					left: 0;
+					top: 50%;
+					width: 0;
+					height: 0;
+					border: 20px solid transparent;
+					border-right-color: $nord5;
+					border-left: 0;
+					border-bottom: 0;
+					margin-top: -10px;
+					margin-left: -20px;
+				}
+			}
+		}
+
+	}
+}

@@ -39,11 +39,12 @@ export type JobStatuModel = {
 }
 
 export type JobModel = JobStatuModel & {
-    id       : number;
-    type     : JobRequestType;
-    createdAt: string;
-    links    : LinkModel[];
-    options  : {
+    id        : number;
+    type      : JobRequestType;
+    createdAt : string;
+    linksCount: number | null;
+    links     : LinkModel[];
+    options   : {
         method   : JobHTTPMethod;
         redirects: number;
         threads  : number;

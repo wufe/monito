@@ -2,6 +2,7 @@ using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -21,6 +22,8 @@ namespace Monito.Web
 
         public IConfiguration Configuration { get; }
 
+        private string _allowDomainCorsPolicy = "_allowDomainCorsPolicy";
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR(conf => conf.EnableDetailedErrors = true);
@@ -31,6 +34,17 @@ namespace Monito.Web
             services.AddDomainServices();
             services.AddPresentationServices();
             services.AddAutomapperConfigurations();
+            services.AddCors(options => {
+                options.AddPolicy(_allowDomainCorsPolicy, builder =>
+                    builder.WithOrigins("http://localhost:8008", "https://monito.bembi.dev")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
+            services.Configure<KestrelServerOptions>(options =>
+            {
+            options.AllowSynchronousIO = true;
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -44,14 +58,21 @@ namespace Monito.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            var cachePeriod = env.IsDevelopment() ? "0" : "604800";
+
             app.UseStaticFiles(new StaticFileOptions(){
                 RequestPath = new PathString("/static"),
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, @"wwwroot/dist/static"))
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, @"wwwroot/dist/static")),
+                OnPrepareResponse = ctx => {
+                    ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
+                }
             });
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(_allowDomainCorsPolicy);
 
             app.UseEndpoints(endpoints =>
             {

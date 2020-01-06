@@ -7,14 +7,10 @@
 	
 	.__content {
 		@include container;
-		color: #222;
-		font-weight: normal;
 		padding: 15px 0 20px 0;
 
-		@media (prefers-color-scheme: dark) {
-			color: #CCC;
-			font-weight: 100;
-		}
+		color: #CCC;
+		font-weight: 100;
 
 		.__message {
 			padding: 10px 25px 10px 25px;
@@ -24,15 +20,12 @@
 			letter-spacing: .05em;
 
 			&:last-child {
-				background-color: #E0E0E0;
 				border-radius: 3px;
-				@media (prefers-color-scheme: dark) {
-					background-color: $nord0;
-					box-shadow: inset -1px 0 0 rgba($nord6, .3),
-						inset 0 -1px 0 rgba($nord6, .2),
-						inset 1px 0 0 rgba(black, .1),
-						inset 0 1px 0 rgba(black, .1);
-				}
+				background-color: $nord0;
+				box-shadow: inset -1px 0 0 rgba($nord6, .3),
+					inset 0 -1px 0 rgba($nord6, .2),
+					inset 1px 0 0 rgba(black, .1),
+					inset 0 1px 0 rgba(black, .1);
 			}
 		}
 

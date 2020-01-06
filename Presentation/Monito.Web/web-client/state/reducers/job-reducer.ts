@@ -38,16 +38,23 @@ export const jobReducer: Reducer<JobState> =
 					}
 				};
 			case JobActions.AddLinksToCurrentJob:
+				if (!state.job)
+					return state;
 				return {
 					...state,
 					job: {
-						...(state.job || {}),
+						...state.job,
 						links: [
-							...((state.job || {}).links || []),
+							...state.job.links,
 							...action.payload
 						]
 					}
-				}
+				};
+			case JobActions.ResetJob:
+				return {
+					...state,
+					job: null
+				};
 			default:
 				return state;
 		}
