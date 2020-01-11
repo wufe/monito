@@ -67,15 +67,11 @@
 }
 
 %input-label {
-    color: black;
+    color: $nord6;
     font-size: .92rem;
     padding: 5px 0;
     margin: 5px 0;
     font-weight: 100;
-
-    @media (prefers-color-scheme: dark) {
-        color: white;
-    }
 }
 
 %input {

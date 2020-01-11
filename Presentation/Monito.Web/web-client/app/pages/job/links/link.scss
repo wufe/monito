@@ -46,19 +46,17 @@ $status-map: (
 		letter-spacing: .05em;
 		transition: background-color linear .1s;
 
-		@media(prefers-color-scheme: dark) {
-			color: $nord4;
-			background-color: $nord2;
-			box-shadow: 0 1px 0 rgba($nord0, .5),
-				1px 0 0 rgba($nord0, .5),
-				0 -1px 0 rgba($nord0, .2),
-				-1px 0 0 rgba($nord0, .2),
-				inset 0 1px 0 rgba($nord5, .1),
-				inset 1px 0 0 rgba($nord5, .1);
+		color: $nord4;
+		background-color: $nord2;
+		box-shadow: 0 1px 0 rgba($nord0, .5),
+			1px 0 0 rgba($nord0, .5),
+			0 -1px 0 rgba($nord0, .2),
+			-1px 0 0 rgba($nord0, .2),
+			inset 0 1px 0 rgba($nord5, .1),
+			inset 1px 0 0 rgba($nord5, .1);
 
-			&:hover {
-				background-color: $nord3;
-			}
+		&:hover {
+			background-color: $nord3;
 		}
 
 		.__status-outline {
@@ -100,19 +98,13 @@ $status-map: (
 				}
 			}
 
-			color: $nord0;
-			@media (prefers-color-scheme: dark) {
-				color: $nord6;
-			}
+			color: $nord6;
 
 			&.--header {
 				font-size: .7rem;
 				height: 22px;
 
-				color: $nord2;
-				@media (prefers-color-scheme: dark) {
-					color: darken($nord4, 10%);
-				}
+				color: darken($nord4, 10%);
 			}
 
 			> * {
@@ -137,10 +129,8 @@ $status-map: (
 					padding: 0;
 				}
 
-				@media (prefers-color-scheme: dark) {
-					color: darken($nord4, 15%);
-					text-shadow: 0 0 1px $nord0;
-				}
+				color: darken($nord4, 15%);
+				text-shadow: 0 0 1px $nord0;
 			}
 
 			.__status {

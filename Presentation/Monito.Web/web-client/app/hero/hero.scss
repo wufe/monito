@@ -11,9 +11,7 @@
 
     color: #323232;
 
-    @media(prefers-color-scheme: dark) {
-        border-color: $nord1;
-    }
+    border-color: $nord1;
 
     position: relative;
     canvas {

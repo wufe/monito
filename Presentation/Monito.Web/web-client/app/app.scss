@@ -1,9 +1,7 @@
 @import "~/styles/main";
 
 body {
-    @media (prefers-color-scheme: dark) {
-        background: $nord1;
-    }
+    background: $nord1;
 
     .app__component {
     

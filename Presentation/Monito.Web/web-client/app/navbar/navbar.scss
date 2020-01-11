@@ -14,7 +14,7 @@
         padding: 0px 20px;
         user-select: none;
 
-        color: #323232;
+        color: $nord6;
 
         a {
             text-decoration: none;
@@ -29,8 +29,6 @@
             text-align: center;
         }
 
-        @media(prefers-color-scheme: dark) {
-            color: white;
-        }
+        
     }
 }
