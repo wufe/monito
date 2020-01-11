@@ -36,6 +36,7 @@ if ($Deploy) {
 
 		Write-Host "Upgrading to latest version.."
 
+		git stash
 		git pull origin master
 
 	#endregion
