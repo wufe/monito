@@ -8,6 +8,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/wufe/monito/worker/models"
+	"github.com/wufe/monito/worker/utils"
 )
 
 type JobProcess struct {
@@ -158,7 +159,9 @@ func (job *JobProcess) performLinkRequest() <-chan struct{} {
 			doneChan <- struct{}{}
 		case link := <-job.linksChan:
 			<-NewHTTPRequestService(link, job).Send()
-			doneChan <- struct{}{}
+			utils.SetTimeout(func() {
+				doneChan <- struct{}{}
+			}, 1000)
 		}
 	}()
 	return doneChan

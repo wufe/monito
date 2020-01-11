@@ -32,9 +32,9 @@ func NewHTTPRequestService(link *models.Link, job *JobProcess) *HTTPServiceReque
 
 func (httpService *HTTPServiceRequest) Send() <-chan struct{} {
 	done := make(chan struct{})
-	httpService.setInProgress()
-	httpService.sendRequest()
 	go func() {
+		httpService.setInProgress()
+		httpService.sendRequest()
 		done <- struct{}{}
 	}()
 	return done

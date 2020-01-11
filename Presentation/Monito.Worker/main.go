@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"sync"
-	"fmt"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
@@ -14,19 +14,6 @@ import (
 )
 
 func main() {
-
-	// request := services.NewHTTPRequest(&services.HTTPRequestStackItem{
-	// 	Url:             "http://bembi.dev",
-	// 	Method:          "GET",
-	// 	MaxRedirects:    1,
-	// 	CurrentRedirect: 0,
-	// })
-
-	// fmt.Println(*request)
-	// fmt.Println(request.Response.StatusCode)
-	// fmt.Println(request.Response.Request.URL)
-	// fmt.Println(request.RedirectsFrom.Response.Request.URL)
-	// panic(false)
 
 	parsedCliArguments := cli.ParseCliArguments(os.Args)
 
@@ -44,6 +31,8 @@ func main() {
 	waitGroup.Add(1)
 	queues := services.RegisterWorker(db, parsedCliArguments)
 	services.NewQueueOrchestrator(queues, db).StartQueues()
+
+	fmt.Println("Worker started.")
 
 	waitGroup.Wait()
 }
