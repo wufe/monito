@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build:server": "cross-env GOARCH=amd64 GOOS=linux go build -o release/Monito.Worker main.go",
-    "copy:environment:production": "cpy .env.production ./release/.env",
+    "copy:environment:production": "cpy .env.production ./release/ --rename=.env",
     "prod": "run-s build:server copy:environment:production"
   },
   "devDependencies": {
