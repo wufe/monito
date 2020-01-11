@@ -91,6 +91,7 @@ namespace Monito.Web.Controllers.API {
 			{
 				var writer = new StreamWriter(HttpContext.Response.Body);
 				var csv = new CsvWriter(writer);
+				csv.Configuration.RegisterClassMap<RetrieveBriefLinkOutputModelCSVMap>();
 				csv.WriteRecords(links);
 				await writer.FlushAsync();
 			})

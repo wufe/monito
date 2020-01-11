@@ -27,4 +27,15 @@ namespace Monito.Web.Extensions {
 				.AddSingleton<IUpdatingClientsAccessor, UpdatingClientsAccessor>();
 		}
 	}
+
+	internal class RetrieveBriefLinkOutputModelCSVMap : ClassMap<RetrieveBriefLinkOutputModel> {
+		public RetrieveBriefLinkOutputModelCSVMap() {
+			Map(m => m.ID).Name("link id");
+			Map(m => m.URL).Name("url");
+			Map(m => m.Output).Name("output");
+			Map(m => m.StatusCode).Name("status code");
+			Map(m => m.RedirectsFromLinkId).Name("redirects from link id");
+			Map(m => m.RedirectsToLinkId).Name("redirects to link id");
+		}
+	}
 }

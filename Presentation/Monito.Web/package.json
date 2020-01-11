@@ -9,7 +9,9 @@
   },
   "scripts": {
     "watch:client": "parcel watch -t browser web-client/index.html --public-url /static --out-dir wwwroot/dist/static --hmr-port 44413 --no-cache",
-    "watch:server": "dotnet watch run",
+    "watch:server:clean": "dotnet clean",
+    "watch:server:run": "dotnet watch run",
+    "watch:server": "run-s watch:server:clean watch:server:run",
     "dev": "run-p watch:client watch:server"
   },
   "devDependencies": {
