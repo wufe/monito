@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"fmt"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
