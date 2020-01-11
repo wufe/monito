@@ -1,117 +1,108 @@
-[CmdletBinding()]
-param (
-	[Parameter()]
-	[switch]
-	$Deploy
-)
-
 $ErrorActionPreference = "Stop";
 
-if ($Deploy) {
-	Write-Host "Deploying..";
+Write-Host "Deploying..";
 
-	# region Check
+# region Check
 
-		$databaseEnvPath = "../.env.production";
-		$presentationEnvPath = "../Presentation/Monito.Web/appsettings.Production.json"
-		$workerEnvPath = "../Presentation/Monito.Worker/.env.production"
+	$databaseEnvPath = "../.env.production";
+	$presentationEnvPath = "../Presentation/Monito.Web/appsettings.Production.json"
+	$workerEnvPath = "../Presentation/Monito.Worker/.env.production"
 
-		$requiredFiles = $databaseEnvPath,$presentationEnvPath,$workerEnvPath
+	$requiredFiles = $databaseEnvPath,$presentationEnvPath,$workerEnvPath
 
-		foreach ($requiredFile in $requiredFiles) {
-			$fullPath = Join-Path $PSScriptRoot $requiredFile
-			if (!(Test-Path $fullPath)) {
-				Write-Host "Could not locate $fullPath. Make sure to create it before deploying.";
-				Exit 1
-			}
+	foreach ($requiredFile in $requiredFiles) {
+		$fullPath = Join-Path $PSScriptRoot $requiredFile
+		if (!(Test-Path $fullPath)) {
+			Write-Host "Could not locate $fullPath. Make sure to create it before deploying.";
+			Exit 1
 		}
+	}
 
-	#endregion
+#endregion
 
-	#region Stop
+#region Stop
 
-		docker-compose -f ./docker-compose.production.yml down
+	docker-compose -f ./docker-compose.production.yml down
 
-	#endregion
+#endregion
 
-	#region Latest version
+#region Latest version
 
-		Write-Host "Upgrading to latest version.."
+	Write-Host "Upgrading to latest version.."
 
-		git stash
-		git pull origin master
+	git stash
+	git pull origin master
 
-	#endregion
+#endregion
 
-	#region Monito.Web
+#region Monito.Web
 
-		Write-Host "Building presentation project.."
+	Write-Host "Building presentation project.."
 
-		Set-Location ./Presentation/Monito.Web
+	Set-Location ./Presentation/Monito.Web
 
-		if (Test-Path ./release) {
-			Remove-Item -Recurse -Force ./release
-		}
+	if (Test-Path ./release) {
+		Remove-Item -Recurse -Force ./release
+	}
 
-		New-Item -ItemType directory ./release
+	New-Item -ItemType directory ./release
 
-		yarn
-		yarn prod
-	
-		Set-Location ../../
+	yarn
+	yarn prod
 
-	#endregion
+	Set-Location ../../
 
-	#region Monito.Worker
+#endregion
 
-		Write-Host "Building worker project.."
+#region Monito.Worker
 
-		Set-Location ./Presentation/Monito.Worker
+	Write-Host "Building worker project.."
 
-		if (Test-Path ./release) {
-			Remove-Item -Recurse -Force ./release
-		}
+	Set-Location ./Presentation/Monito.Worker
 
-		New-Item -ItemType directory ./release
+	if (Test-Path ./release) {
+		Remove-Item -Recurse -Force ./release
+	}
 
-		yarn
-		yarn prod
+	New-Item -ItemType directory ./release
 
-		Set-Location ../../
+	yarn
+	yarn prod
 
-	#endregion
+	Set-Location ../../
 
-	#region Start
+#endregion
 
-		Write-Host "Building images and starting.."
+#region Start
 
-		docker-compose -f ./docker-compose.production.yml up -d --build
+	Write-Host "Building images and starting.."
 
-	#endregion
+	docker-compose -f ./docker-compose.production.yml up -d --build
 
-	#region Clean
+#endregion
 
-		Write-Host "Cleaning up.."
+#region Clean
 
-		docker image prune --force
+	Write-Host "Cleaning up.."
 
-	#endregion
+	docker image prune --force
 
-	#region Logs
+#endregion
 
-		Set-Location ./Presentation/Monito.Web
+#region Logs
 
-		Remove-Item -Recurse -Force release
+	Set-Location ./Presentation/Monito.Web
 
-		Set-Location ../../
+	Remove-Item -Recurse -Force release
 
-		Set-Location ./Presentation/Monito.Worker
+	Set-Location ../../
 
-		Remove-Item -Recurse -Force release
+	Set-Location ./Presentation/Monito.Worker
 
-		Set-Location ../../
+	Remove-Item -Recurse -Force release
 
-		docker-compose -f ./docker-compose.production.yml logs -f
+	Set-Location ../../
 
-	#endregion
-}
+	docker-compose -f ./docker-compose.production.yml logs -f
+
+#endregion
