@@ -1,42 +1,41 @@
 version: '3'
 services:
   application:
-    image: kesshin/development:v1.6
+    build:
+      context: Presentation/Monito.Web
+      dockerfile: docker/Dockerfile
     container_name: monito-application
-    command: runuser node -c 'yarn dev'
-    # cpu_percent: 35
-    working_dir: /home/data/Presentation/Monito.Web
+    command: /app/Monito.Web
+    environment: 
+      ASPNETCORE_ENVIRONMENT: Production
+    cpu_percent: 35
     depends_on:
       - database
     ports:
       - 127.0.0.1:8008:8008
-      - 127.0.0.1:44013:44413
     volumes:
       - .:/home/data
     links:
       - database
   worker:
-    image: kesshin/development:v1.6
+    build:
+      context: Presentation/Monito.Worker
+      dockerfile: docker/Dockerfile
     container_name: monito-worker
-    working_dir: /home/data/Presentation/Monito.Worker
+    command: /app/Monito.Worker --simple --basic --batch
     restart: always
-    command: go run . --simple --basic --priority
-    # cpu_percent: 25
+    cpu_percent: 25
     depends_on:
       - database
-    volumes:
-      - .:/home/data
     links:
       - database
   database:
     image: mysql:8.0.18
     container_name: monito-database
     command: --default-authentication-plugin=mysql_native_password
-    # cpu_percent: 35
+    cpu_percent: 35
     restart: always
-    env_file: .env
+    env_file: .env.production
     volumes:
       - ./Infrastructure/DatabaseScripts.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./.data:/var/lib/mysql
-    ports:
-      - 127.0.0.1:3306:3306
+      - ./.data.prod:/var/lib/mysql

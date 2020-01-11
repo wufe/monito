@@ -433,4 +433,8 @@ MigrationBackup/
 
 # End of https://www.gitignore.io/api/linux,macos,windows,visualstudio,visualstudiocode
 
-.env
+.env.production
+
+.data
+
+.data.prod

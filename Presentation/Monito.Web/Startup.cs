@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +43,7 @@ namespace Monito.Web
             });
             services.Configure<KestrelServerOptions>(options =>
             {
-            options.AllowSynchronousIO = true;
+                options.AllowSynchronousIO = true;
             });
 
         }
@@ -55,7 +56,7 @@ namespace Monito.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Index");
             }
 
             var cachePeriod = env.IsDevelopment() ? "0" : "604800";

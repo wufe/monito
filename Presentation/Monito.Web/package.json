@@ -9,10 +9,13 @@
   },
   "scripts": {
     "watch:client": "parcel watch -t browser web-client/index.html --public-url /static --out-dir wwwroot/dist/static --hmr-port 44413 --no-cache",
+    "build:client": "parcel build -t browser web-client/index.html --public-url /static --out-dir release/wwwroot/dist/static --no-cache",
     "watch:server:clean": "dotnet clean",
     "watch:server:run": "dotnet watch run",
     "watch:server": "run-s watch:server:clean watch:server:run",
-    "dev": "run-p watch:client watch:server"
+    "publish:server": "dotnet publish --configuration Release --output release --self-contained --runtime linux-x64",
+    "dev": "run-p watch:client watch:server",
+    "prod": "run-s publish:server build:client"
   },
   "devDependencies": {
     "@microsoft/signalr": "^3.1.0",
@@ -28,6 +31,7 @@
     "axios": "^0.19.0",
     "connected-react-router": "^6.6.1",
     "core-js": "^3.6.1",
+    "cssnano": "^4.1.10",
     "moment": "^2.24.0",
     "nord": "^0.2.1",
     "npm-run-all": "^4.1.5",
