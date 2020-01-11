@@ -5,6 +5,8 @@ param (
 	$Deploy
 )
 
+$ErrorActionPreference = "Stop";
+
 if ($Deploy) {
 	Write-Host "Deploying..";
 
