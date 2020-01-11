@@ -32,7 +32,7 @@ func main() {
 
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println(error.Error())
+		fmt.Println(err)
 		log.Fatal("Error loading .env file")
 	}
 
