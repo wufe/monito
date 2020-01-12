@@ -1,3 +1,15 @@
+[CmdletBinding()]
+param (
+	[Parameter()]
+	[string]
+	$Branch
+)
+
+if ($Branch -eq "") {
+	$Branch = "master"
+}
+
+
 $ErrorActionPreference = "Stop";
 
 Write-Host "Deploying..";
@@ -31,7 +43,8 @@ Write-Host "Deploying..";
 	Write-Host "Upgrading to latest version.."
 
 	git stash
-	git pull origin master
+	git pull origin $Branch
+	git checkout $Branch
 
 #endregion
 
