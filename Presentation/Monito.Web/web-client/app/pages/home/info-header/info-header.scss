@@ -10,14 +10,13 @@
         margin: 0 10px;
 
         font-size: 1rem;
-        border-color: #D1D1D1;
 
-        background: $nord2;
+        background: $nord4;
         box-shadow: -1px 0 0 rgba(black, .1),
             0 -1px 0 rgba(black, .1),
             1px 0 0 rgba(black, .2),
             0 1px 0 rgba(black, .2);
-        color: $nord6;
+        color: $nord1;
 
         p {
             &.--big {
