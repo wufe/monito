@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -57,8 +58,13 @@ func (httpService *HTTPServiceRequest) sendRequest() {
 		httpMethod = "GET"
 	}
 
+	var URL = httpService.link.URL
+	if !strings.HasPrefix(URL, "http") {
+		URL = "http://" + URL
+	}
+
 	requestLinkedListHead := &HTTPRequestLinkedList{
-		URL:             httpService.link.URL,
+		URL:             URL,
 		Method:          httpMethod,
 		UserAgent:       httpService.options.UserAgent,
 		MaxRedirects:    httpService.options.Redirects,
