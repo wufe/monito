@@ -5,6 +5,7 @@ using Monito.Database.Entities.Interface;
 namespace Monito.Database.Entities {
 	public class Request : IPrimaryKeyEntity, ITimestampTrackedEntity, IUUIDTrackedEntity {
 		public int ID { get; set; }
+		public string IP { get; set; }
 		public RequestType Type { get; set; }
 		public string Options { get; set; }
 		public RequestStatus Status { get; set; }

@@ -18,9 +18,12 @@ namespace Monito.Web.Services {
 		}
 
 		public string GetIP() {
-			var ip = _httpContext.GetRemoteIPAddress().ToString();
-			_logger.LogInformation(ip);
-			return ip;
+			var ip = _httpContext.GetRemoteIPAddress();
+			if (ip.IsIPv4MappedToIPv6) {
+				return ip.MapToIPv4().ToString();
+			} else {
+				return ip.MapToIPv6().ToString();
+			}
 		}
 	}
 }

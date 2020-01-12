@@ -31,11 +31,12 @@ namespace Monito.Web.Services {
 			var links = BuildLinksFromJobModel(inputModel);
 
 			return new Request() {
-				Links = links,
-				Type = RequestType.Simple,
+				IP      = user.IP,
+				Links   = links,
+				Type    = RequestType.Simple,
 				Options = options,
-				UserID = user.ID,
-				Status = RequestStatus.Ready
+				UserID  = user.ID,
+				Status  = RequestStatus.Ready
 			};
 		}
 

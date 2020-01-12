@@ -29,6 +29,7 @@ type RequestType uint8
 
 type Request struct {
 	ID        uint          `gorm:"primary_key"`
+	IP        string        `gorm:"type:varchar(100)"`
 	Type      RequestType   `gorm:"type:tinyint"`
 	Options   string        `gorm:"type:text"`
 	Status    RequestStatus `gorm:"type:tinyint"`

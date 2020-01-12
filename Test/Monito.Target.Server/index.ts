@@ -25,6 +25,7 @@ WebServer.all("*", (req, res) => {
 		200,
 		403, 404,
 		500, 502];
+	console.log(req.headers)
 	res.sendStatus(statusCodes[Math.floor(Math.random() * statusCodes.length)])
 })
 

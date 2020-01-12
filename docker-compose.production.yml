@@ -22,7 +22,7 @@ services:
       context: Presentation/Monito.Worker
       dockerfile: docker/Dockerfile
     container_name: monito-worker
-    command: /app/Monito.Worker --simple --basic --batch
+    command: /app/Monito.Worker --simple --basic --priority
     restart: always
     cpu_percent: 25
     depends_on:

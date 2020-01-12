@@ -14,6 +14,7 @@ create table if not exists users (
 
 create table if not exists requests (
 	id int not null auto_increment primary key,
+    ip varchar(100),
     type tinyint default 1, -- Simple: 1, Batch: 2
     options longtext,
     status tinyint default 0, -- Incomplete: 0, Ready: 1, InProgress: 2, Done: 3

@@ -59,13 +59,18 @@ func (httpService *HTTPServiceRequest) sendRequest() {
 	}
 
 	var URL = httpService.link.URL
-	if !strings.HasPrefix(URL, "http") {
+	if !strings.HasPrefix(strings.ToLower(URL), "http") {
 		URL = "http://" + URL
 	}
+
+	headers := make(map[string]string)
+	headers["X-Forwarded-For"] = httpService.request.IP
+	headers["X-Real-IP"] = httpService.request.IP
 
 	requestLinkedListHead := &HTTPRequestLinkedList{
 		URL:             URL,
 		Method:          httpMethod,
+		Headers:         headers,
 		UserAgent:       httpService.options.UserAgent,
 		MaxRedirects:    httpService.options.Redirects,
 		Timeout:         httpService.options.Timeout,
@@ -129,6 +134,7 @@ func (httpService *HTTPServiceRequest) parseAndSaveLink(linkedList *HTTPRequestL
 type HTTPRequestLinkedList struct {
 	URL             string
 	Method          string
+	Headers         map[string]string
 	UserAgent       string
 	Response        *http.Response
 	ResponseError   error
@@ -156,6 +162,10 @@ func NewHTTPRequest(stackItem *HTTPRequestLinkedList) *HTTPRequestLinkedList {
 
 	request.Header.Set("User-Agent", stackItem.UserAgent)
 
+	for key, value := range stackItem.Headers {
+		request.Header.Set(key, value)
+	}
+
 	response, responseError = client.Do(request)
 
 	if responseError != nil {
@@ -171,6 +181,7 @@ func NewHTTPRequest(stackItem *HTTPRequestLinkedList) *HTTPRequestLinkedList {
 					// TODO: Check if location is not empty
 					URL:             response.Header.Get("Location"),
 					Method:          stackItem.Method,
+					Headers:         stackItem.Headers,
 					Response:        nil,
 					ResponseError:   nil,
 					Timeout:         stackItem.Timeout,

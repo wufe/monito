@@ -42,7 +42,8 @@ namespace Monito.Web.Controllers.API {
 		[HttpPost("save")]
 		public IActionResult SaveJob([FromBody]SaveJobInputModel inputModel) {
 			if (ModelState.IsValid) {
-				var user = _userService.FindOrCreateUserByIP(_httpRequestService.GetIP());
+				var userIP = _httpRequestService.GetIP();
+				var user = _userService.FindOrCreateUserByIP(userIP);
 				var request = _jobService.BuildRequest(inputModel, user);
 				_requestService.Add(request);
 				return new JsonResult(new {
