@@ -43,8 +43,9 @@ Write-Host "Deploying..";
 	Write-Host "Upgrading to latest version.."
 
 	git stash
-	git pull origin $Branch
+	git fetch origin $Branch
 	git checkout $Branch
+	git pull --rebase origin $Branch
 
 #endregion
 
