@@ -116,6 +116,8 @@ Write-Host "Deploying..";
 
 	Set-Location ../../
 
+	git stash
+
 	docker-compose -f ./docker-compose.production.yml logs -f
 
 #endregion
