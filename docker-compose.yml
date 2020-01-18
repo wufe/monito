@@ -6,7 +6,6 @@ services:
     command: runuser node -c 'yarn dev'
     # cpu_percent: 35
     working_dir: /home/data/Presentation/Monito.Web
-    env_file: .env
     depends_on:
       - database
     ports:

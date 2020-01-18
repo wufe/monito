@@ -14,19 +14,39 @@ $ErrorActionPreference = "Stop";
 
 Write-Host "Deploying..";
 
-# region Check
+#region Check
 
-	$databaseEnvPath = "../.env.production";
+	$mainEnvPath = "../.env.production";
 	$presentationEnvPath = "../Presentation/Monito.Web/appsettings.Production.json"
 	$workerEnvPath = "../Presentation/Monito.Worker/.env.production"
 
-	$requiredFiles = $databaseEnvPath,$presentationEnvPath,$workerEnvPath
+	$requiredFiles = $mainEnvPath,$presentationEnvPath,$workerEnvPath
 
 	foreach ($requiredFile in $requiredFiles) {
 		$fullPath = Join-Path $PSScriptRoot $requiredFile
 		if (!(Test-Path $fullPath)) {
 			Write-Host "Could not locate $fullPath. Make sure to create it before deploying.";
 			Exit 1
+		}
+	}
+
+#endregion
+
+#region Load env
+
+	$mainEnvPath = Join-Path $PSScriptRoot $mainEnvPath
+	$mainEnvPath = Resolve-Path $mainEnvPath
+	
+	$env = Get-Content $mainEnvPath
+
+	$lines = $env.Split([Environment]::NewLine)
+
+	$environmentVariables = ${}
+	
+	foreach ($line in $lines) {
+		if ($line.Trim() -ne "") {
+			$key, $value = $line.Split("=")
+			$environmentVariables.Add($key, $value)
 		}
 	}
 
@@ -62,7 +82,7 @@ Write-Host "Deploying..";
 	New-Item -ItemType directory ./release
 
 	yarn
-	yarn prod
+	$env:GA_UA=$environmentVariables.GA_UA; yarn prod
 
 	Set-Location ../../
 
