@@ -41,7 +41,7 @@ Write-Host "Deploying..";
 
 	$lines = $env.Split([Environment]::NewLine)
 
-	$environmentVariables = ${}
+	$environmentVariables = @{}
 	
 	foreach ($line in $lines) {
 		if ($line.Trim() -ne "") {
