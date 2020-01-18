@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
 using Monito.Database.Entities;
 using Monito.Domain.Service.Interface;
 using Monito.Repository.Interface;

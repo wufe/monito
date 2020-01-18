@@ -7,6 +7,22 @@ import { Provider } from 'react-redux';
 import { history, store } from '~/state/store';
 import { ConnectedRouter } from 'connected-react-router';
 
+const CC = window.cookieconsent;
+
+CC.initialise({
+    "palette": {
+        "popup": {
+            "background": "#2e3440",
+            "text": "#eceff4"
+        },
+        "button": {
+            "background": "#bf616a",
+            "text": "#eceff4"
+        }
+    },
+    "theme": "edgeless"
+});
+
 render(
     <Provider store={store}>
         <ConnectedRouter history={history}>

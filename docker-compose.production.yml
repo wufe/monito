@@ -8,6 +8,7 @@ services:
     command: /app/Monito.Web
     environment: 
       ASPNETCORE_ENVIRONMENT: Production
+    env_file: .env
     cpu_percent: 35
     depends_on:
       - database
