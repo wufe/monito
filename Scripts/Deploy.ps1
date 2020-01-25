@@ -2,7 +2,15 @@
 param (
 	[Parameter()]
 	[string]
-	$Branch
+	$Branch,
+
+	[Parameter()]
+	[switch]
+	$SkipUpgrade,
+
+	[Parameter()]
+	[switch]
+	$SkipRebuild
 )
 
 if ($Branch -eq "") {
@@ -18,7 +26,7 @@ Write-Host "Deploying..";
 
 	$mainEnvPath = "../.env.production";
 	$presentationEnvPath = "../Presentation/Monito.Web/appsettings.Production.json"
-	$workerEnvPath = "../Presentation/Monito.Worker/.env.production"
+	$workerEnvPath = "../Services/Monito.Worker/.env.production"
 
 	$requiredFiles = $mainEnvPath,$presentationEnvPath,$workerEnvPath
 
@@ -60,12 +68,16 @@ Write-Host "Deploying..";
 
 #region Latest version
 
-	Write-Host "Upgrading to latest version.."
+	if (!$SkipUpgrade) {
+		Write-Host "Upgrading to latest version.."
 
-	git stash
-	git fetch origin $Branch
-	git checkout $Branch
-	git pull --rebase origin $Branch
+		git stash
+		git fetch origin $Branch
+		git checkout $Branch
+		git pull --rebase origin $Branch
+	} else {
+		Write-Host "Skipping upgrade to latest version.."
+	}
 
 #endregion
 
@@ -92,7 +104,7 @@ Write-Host "Deploying..";
 
 	Write-Host "Building worker project.."
 
-	Set-Location ./Presentation/Monito.Worker
+	Set-Location ./Services/Monito.Worker
 
 	if (Test-Path ./release) {
 		Remove-Item -Recurse -Force ./release
@@ -111,7 +123,11 @@ Write-Host "Deploying..";
 
 	Write-Host "Building images and starting.."
 
-	docker-compose -f ./docker-compose.production.yml up -d --build
+	if (!$SkipRebuild) {
+		docker-compose -f ./docker-compose.production.yml up -d --build
+	} else {
+		docker-compose -f ./docker-compose.production.yml up -d
+	}
 
 #endregion
 
@@ -131,13 +147,15 @@ Write-Host "Deploying..";
 
 	Set-Location ../../
 
-	Set-Location ./Presentation/Monito.Worker
+	Set-Location ./Services/Monito.Worker
 
 	Remove-Item -Recurse -Force release
 
 	Set-Location ../../
 
-	git stash
+	if (!$SkipUpgrade) {
+		git stash
+	}
 
 	docker-compose -f ./docker-compose.production.yml logs -f
 

@@ -19,7 +19,7 @@ services:
       - database
   worker:
     build:
-      context: Presentation/Monito.Worker
+      context: Services/Monito.Worker
       dockerfile: docker/Dockerfile
     container_name: monito-worker
     command: /app/Monito.Worker --simple --basic --priority

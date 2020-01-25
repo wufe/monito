@@ -18,7 +18,7 @@ services:
   worker:
     image: kesshin/development:v1.6
     container_name: monito-worker
-    working_dir: /home/data/Presentation/Monito.Worker
+    working_dir: /home/data/Services/Monito.Worker
     restart: always
     command: go run . --simple --basic --priority
     # cpu_percent: 25
