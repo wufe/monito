@@ -39,3 +39,14 @@ services:
     volumes:
       - ./Infrastructure/DatabaseScripts.sql:/docker-entrypoint-initdb.d/init.sql
       - ./.data.prod:/var/lib/mysql
+  pma:
+    image: phpmyadmin/phpmyadmin:5.0
+    container_name: monito-pma
+    environment:
+      - PMA_HOST=database
+    ports:
+      - 127.0.0.1:8007:80
+    depends_on:
+      - database
+    links:
+      - database
