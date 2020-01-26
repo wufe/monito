@@ -1,0 +1,21 @@
+version: '2.2'
+services:
+  application:
+    build:
+      context: Presentation/Monito.Web
+      dockerfile: docker/Dockerfile
+    command: /app/Monito.Web
+    environment: 
+      ASPNETCORE_ENVIRONMENT: Production
+    cpu_percent: 35
+    links:
+      - database
+  worker:
+    build:
+      context: Services/Monito.Worker
+      dockerfile: docker/Dockerfile
+    command: /app/Monito.Worker --simple --basic --priority
+  database:
+    env_file: .env.production
+    volumes:
+      - ./.data.prod:/var/lib/mysql

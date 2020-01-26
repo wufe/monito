@@ -1,0 +1,37 @@
+version: '2.2'
+services:
+  application:
+    image: kesshin/development:v1.6
+    container_name: monito-application
+    command: yarn dev
+    working_dir: /home/data/Presentation/Monito.Web
+    ports:
+      - 127.0.0.1:44013:44413
+    volumes:
+      - .:/home/data
+  worker:
+    image: kesshin/development:v1.6
+    working_dir: /home/data/Services/Monito.Worker
+    command: go run . --simple --basic --priority
+    volumes:
+      - .:/home/data
+  database:
+    env_file: .env
+    volumes:
+      - ./.data:/var/lib/mysql
+    ports:
+      - 127.0.0.1:3306:3306
+  proxy:
+    image: nginx
+    container_name: monito-proxy
+    depends_on:
+      - application
+    links:
+      - application
+    ports:
+      - 127.0.0.1:8000:80
+    volumes:
+      - ./Configuration/Nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./Configuration/Nginx/nginxconfig.io:/etc/nginx/nginxconfig.io
+      - ./Configuration/Nginx/sites-available:/etc/nginx/sites-available
+      - ./Configuration/Nginx/sites-enabled:/etc/nginx/sites-enabled

@@ -62,7 +62,7 @@ Write-Host "Deploying..";
 
 #region Stop
 
-	docker-compose -f ./docker-compose.production.yml down
+	docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml down
 
 #endregion
 
@@ -124,9 +124,9 @@ Write-Host "Deploying..";
 	Write-Host "Building images and starting.."
 
 	if (!$SkipRebuild) {
-		docker-compose -f ./docker-compose.production.yml up -d --build
+		docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml up -d --build
 	} else {
-		docker-compose -f ./docker-compose.production.yml up -d
+		docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml up -d
 	}
 
 #endregion
@@ -157,6 +157,6 @@ Write-Host "Deploying..";
 		git stash
 	}
 
-	docker-compose -f ./docker-compose.production.yml logs -f
+	docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml logs -f
 
 #endregion
