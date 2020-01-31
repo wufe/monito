@@ -4,11 +4,11 @@ import { createWriteStream } from 'fs';
 const WebServer = Express();
 
 setTimeout(() => {
-	console.log('Creating 100k test links..')
+	console.log('Creating test links..')
 	const writeStream = createWriteStream('./test-links.txt');
 	const genUrl = () => 
 		'http://localhost:8009/' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-	for (let i = 0; i < 100000; i++)
+	for (let i = 0; i < 5000; i++)
 		writeStream.write(genUrl() + '\n', 'utf8');
 	writeStream.on('finish', () => {
 		console.log('Done');
@@ -26,7 +26,9 @@ WebServer.all("*", (req, res) => {
 		403, 404,
 		500, 502];
 	console.log(req.headers)
-	res.sendStatus(statusCodes[Math.floor(Math.random() * statusCodes.length)])
+	setTimeout(() => {
+		res.sendStatus(statusCodes[Math.floor(Math.random() * statusCodes.length)]);
+	}, 1000);
 })
 
 const port = 8009;
