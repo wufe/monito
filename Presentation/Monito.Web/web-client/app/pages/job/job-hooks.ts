@@ -20,6 +20,7 @@ export const useJobFetch = (userUUID: string, jobUUID: string) => {
 
 		return () => {
 			clearInterval(refreshStatusTimer);
+			dispatch(deactivateJobUpdatesStream())
 		};
 	}, []);
 };
@@ -31,10 +32,4 @@ export const useRealtimeJobUpdates = (userUUID: string, jobUUID: string) => {
 			return null;
 		return state.job.job.status;
 	});
-
-	// useEffect(() => {
-	// 	return () => {
-	// 		dispatch(deactivateJobUpdatesStream());
-	// 	};
-	// }, [jobStatus]);
 }

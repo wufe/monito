@@ -83,11 +83,11 @@ export const refreshJobStatusThunk =
                             dispatch(requestJobUpdates());
                     }
                 }
-                if (newStatus !== JobStatus.INCOMPLETE &&
-                    newStatus !== JobStatus.READY &&
-                    newStatus !== JobStatus.INPROGRESS) {
-                    dispatch(setStatusPolling(false));
-                }
+                // if (newStatus !== JobStatus.INCOMPLETE &&
+                //     newStatus !== JobStatus.READY &&
+                //     newStatus !== JobStatus.INPROGRESS) {
+                //     dispatch(setStatusPolling(false));
+                // }
                 return data;
             });
     };
