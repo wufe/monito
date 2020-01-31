@@ -15,6 +15,8 @@ const (
 	RequestStatusInProgress RequestStatus = 3
 	// RequestStatusDone - The request processing ended
 	RequestStatusDone RequestStatus = 4
+	// RequestStatusAbort - The request has been aborted
+	RequestStatusAbort RequestStatus = 5
 
 	RequestTypeSimple RequestType = 1
 	RequestTypeBatch  RequestType = 2

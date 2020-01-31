@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"sync"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -14,6 +15,8 @@ import (
 )
 
 func main() {
+
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	parsedCliArguments := cli.ParseCliArguments(os.Args)
 
@@ -30,7 +33,14 @@ func main() {
 
 	waitGroup.Add(1)
 	queues := services.RegisterWorker(db, parsedCliArguments)
-	services.NewQueueOrchestrator(queues, db).StartQueues()
+
+	fmt.Println("Worker registered itself.")
+
+	orchestrator := services.NewQueueOrchestrator(queues, db).Init()
+
+	fmt.Println("Orchestrator initialized.")
+
+	orchestrator.StartQueues()
 
 	fmt.Println("Worker started.")
 

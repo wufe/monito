@@ -20,6 +20,10 @@ func NewQueueOrchestrator(queues []*models.Queue, db *gorm.DB) *QueueOrchestrato
 		queues: queues,
 		db:     db,
 	}
+	return orchestrator
+}
+
+func (orchestrator *QueueOrchestrator) Init() *QueueOrchestrator {
 	orchestrator.resetRequests()
 	orchestrator.startRetrievalProcess()
 	orchestrator.startDequeueProcess()
@@ -27,9 +31,11 @@ func NewQueueOrchestrator(queues []*models.Queue, db *gorm.DB) *QueueOrchestrato
 }
 
 func (orchestrator *QueueOrchestrator) StartQueues() {
-	for _, queue := range orchestrator.queues {
-		NewWorkingQueue(orchestrator, queue, orchestrator.db).Start()
-	}
+	go func() {
+		for _, queue := range orchestrator.queues {
+			NewWorkingQueue(orchestrator, queue, orchestrator.db).Start()
+		}
+	}()
 }
 
 func (orchestrator *QueueOrchestrator) GetRequest(requestType models.RequestType) chan *models.Request {

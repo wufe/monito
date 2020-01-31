@@ -17,6 +17,7 @@ type JobProcess struct {
 	db                *gorm.DB
 	retrievalDoneChan *chan struct{}
 	fetchDoneChan     *chan struct{}
+	stopChan          *chan struct{}
 	linksChan         chan *models.Link
 }
 
@@ -31,11 +32,14 @@ func (job *JobProcess) Start() {
 	job.resetLinks()
 	job.loadOptions()
 
+	stopChan := make(chan struct{}, 1)
+	job.stopChan = &stopChan
 	retrievalDoneChan := make(chan struct{}, 1)
 	job.retrievalDoneChan = &retrievalDoneChan
 	fetchDoneChan := make(chan struct{}, 1)
 	job.fetchDoneChan = &fetchDoneChan
 
+	job.startStatusCheckProcess()
 	job.startLinkRetrievalProcess()
 	job.startFetch()
 }
@@ -63,8 +67,43 @@ func (job *JobProcess) loadOptions() {
 	job.options = &requestOptions
 }
 
+func (job *JobProcess) startStatusCheckProcess() {
+	go func() {
+	L:
+		for {
+			select {
+			case <-*job.retrievalDoneChan:
+				*job.retrievalDoneChan <- struct{}{}
+				break L
+			case <-*job.fetchDoneChan:
+				*job.fetchDoneChan <- struct{}{}
+				break L
+			default:
+				status := job.getJobStatus()
+				if status == models.RequestStatusAbort {
+					*job.stopChan <- struct{}{}
+					break L
+				}
+				time.Sleep(500 * time.Millisecond)
+			}
+		}
+	}()
+}
+
+func (job *JobProcess) getJobStatus() models.RequestStatus {
+
+	foundRequest := models.Request{}
+
+	job.db.Model(&models.Request{}).
+		Where(&models.Request{ID: job.request.ID}).
+		First(&foundRequest)
+
+	job.request.Status = foundRequest.Status
+
+	return foundRequest.Status
+}
+
 func (job *JobProcess) startLinkRetrievalProcess() {
-	// Buffer of 20 links
 	job.linksChan = make(chan *models.Link, job.options.Threads)
 	go func() {
 		job.retrievalProcess()
@@ -78,6 +117,10 @@ L:
 		select {
 		case <-*job.retrievalDoneChan:
 			*job.retrievalDoneChan <- struct{}{}
+			break L
+		case <-*job.stopChan:
+			*job.stopChan <- struct{}{}
+			fmt.Println("Retrieval process aborted.")
 			break L
 		default:
 			link := job.getLink(lastLinkID)
@@ -135,6 +178,10 @@ L:
 				requestQueueChannel <- struct{}{}
 				wg.Done()
 			}()
+		case <-*job.stopChan:
+			*job.stopChan <- struct{}{}
+			fmt.Println("Fetch process aborted")
+			break L
 		// Should enter here only if request queue channel is empty and done
 		case <-*job.retrievalDoneChan:
 			*job.retrievalDoneChan <- struct{}{}
