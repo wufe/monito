@@ -28,7 +28,7 @@ WebServer.all("*", (req, res) => {
 	console.log(req.headers)
 	setTimeout(() => {
 		res.sendStatus(statusCodes[Math.floor(Math.random() * statusCodes.length)]);
-	}, 1000);
+	}, 5000);
 })
 
 const port = 8009;
