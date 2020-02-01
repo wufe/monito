@@ -15,7 +15,6 @@ namespace Monito.Web.Integration {
 		public static void AddDatabase(this IServiceCollection services, string connectionString) {
 			services.AddDbContext<DbContext, MonitoContext>(options =>
 				options
-					.UseLazyLoadingProxies()
 					.UseMySql(connectionString, mysqlOptions =>
 						mysqlOptions.ServerVersion(new ServerVersion(new Version(8, 0, 18), ServerType.MySql))));
 		}

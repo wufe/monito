@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Monito.Database.Entities;
 using Monito.Domain.Service.Interface;
 using Monito.Repository.Interface;
@@ -58,6 +59,7 @@ namespace Monito.Domain.Service {
 		public IQueryable<Link> GetAllLinksByRequestID(int ID) {
 			return _linksRepository
 				.AsNoTracking()
+				.Include(x => x.RedirectsTo)
 				.Where(x => x.RequestID == ID);
 		}
 	}

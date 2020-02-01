@@ -12,6 +12,6 @@ namespace Monito.Database.Entities {
         public Guid UUID { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public virtual ICollection<Request> Requests { get; set; }
+        public ICollection<Request> Requests { get; set; }
     }
 }

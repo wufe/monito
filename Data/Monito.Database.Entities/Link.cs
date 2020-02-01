@@ -13,10 +13,10 @@ namespace Monito.Database.Entities {
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 		public int? RedirectsFromLinkId { get; set; }
-		public virtual Link RedirectsFrom { get; set; }
-		public virtual Link RedirectsTo { get; set; }
+		public Link RedirectsFrom { get; set; }
+		public Link RedirectsTo { get; set; }
 		public int RequestID { get; set; }
-		public virtual Request Request { get; set; }
+		public Request Request { get; set; }
 	}
 
 	public enum LinkStatus : byte {

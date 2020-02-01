@@ -9,7 +9,7 @@ namespace Monito.Database.Entities {
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 		public int WorkerID { get; set; }
-		public virtual Worker Worker { get; set; }
+		public Worker Worker { get; set; }
 	}
 
 	public enum QueueType : byte {
