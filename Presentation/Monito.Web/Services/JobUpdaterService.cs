@@ -39,7 +39,7 @@ namespace Monito.Web.Services {
 
 		public Task StartAsync(CancellationToken cancellationToken) {
 			_logger.LogInformation("Starting job updater service.");
-			_timer = new Timer(async _ => await Task.Run(SendUpdates), null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+			_timer = new Timer(async _ => await Task.Run(SendUpdates), null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
 			return Task.CompletedTask;
 		}
 
