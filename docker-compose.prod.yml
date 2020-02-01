@@ -15,7 +15,9 @@ services:
       context: Services/Monito.Worker
       dockerfile: docker/Dockerfile
     command: /app/Monito.Worker --simple --basic --priority
+    cpu_percent: 25
   database:
     env_file: .env.production
+    cpu_percent: 60
     volumes:
       - ./.data.prod:/var/lib/mysql
