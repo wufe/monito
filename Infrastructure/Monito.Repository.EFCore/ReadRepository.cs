@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Monito.Database.Entities.Interface;
 using Monito.Repository.Interface;
@@ -26,11 +27,10 @@ namespace Monito.Repository.EFCore
 				.Set<T>()
 				.FirstOrDefault(x => x.ID == ID);
 
-		public IQueryable<T> FindAll(Func<T, bool> selector) =>
-            _context
+		public IQueryable<T> FindAll(Expression<Func<T, bool>> selector) =>
+			_context
 				.Set<T>()
-				.Where(selector)
-				.AsQueryable();
+				.Where(selector);
 
 		public IQueryable<T> FindAll() =>
             _context
