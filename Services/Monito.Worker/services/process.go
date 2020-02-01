@@ -73,15 +73,21 @@ func (job *JobProcess) startStatusCheckProcess() {
 		for {
 			select {
 			case <-*job.retrievalDoneChan:
+				fmt.Println("#001 Status check process ending because there are no more links to be requested..")
 				*job.retrievalDoneChan <- struct{}{}
+				fmt.Println("#001 Done.")
 				break L
 			case <-*job.fetchDoneChan:
+				fmt.Println("#002 Status check process ending because the fetch process has done..")
 				*job.fetchDoneChan <- struct{}{}
+				fmt.Println("#002 Done.")
 				break L
 			default:
 				status := job.getJobStatus()
 				if status == models.RequestStatusAbort {
+					fmt.Println("#003 Status check process ending because abortion has been requested..")
 					*job.stopChan <- struct{}{}
+					fmt.Println("#003 Done.")
 					break L
 				}
 				time.Sleep(500 * time.Millisecond)
@@ -115,9 +121,6 @@ func (job *JobProcess) retrievalProcess() {
 L:
 	for {
 		select {
-		case <-*job.retrievalDoneChan:
-			*job.retrievalDoneChan <- struct{}{}
-			break L
 		case <-*job.stopChan:
 			*job.stopChan <- struct{}{}
 			fmt.Println("Retrieval process aborted.")
@@ -128,7 +131,7 @@ L:
 				lastLinkID = link.ID
 				job.linksChan <- link
 			} else {
-				*job.retrievalDoneChan <- struct{}{}
+				*job.retrievalDoneChan <- struct{}{} // <- 1
 				break L
 			}
 		}
@@ -184,8 +187,11 @@ L:
 			break L
 		// Should enter here only if request queue channel is empty and done
 		case <-*job.retrievalDoneChan:
+			fmt.Println("#004 Fetch process cannot fetch more links..")
 			*job.retrievalDoneChan <- struct{}{}
+			fmt.Println("#004 Stopping fetch process..")
 			*job.fetchDoneChan <- struct{}{}
+			fmt.Println("#004 Done")
 			break L
 		default:
 		}

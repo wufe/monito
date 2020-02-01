@@ -25,6 +25,7 @@ export enum JobStatus {
     ACKNOWLEDGED = "Acknowledged",
     INPROGRESS   = "InProgress",
     DONE         = "Done",
+    ABORTED      = "Aborted",
 }
 
 // #region Responses

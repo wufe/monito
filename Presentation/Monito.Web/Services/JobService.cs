@@ -72,8 +72,6 @@ namespace Monito.Web.Services {
 		public IEnumerable<RetrieveBriefLinkOutputModel> GetLinksForDownloadByRequestID(int ID) {
 			return _requestService
 				.GetAllLinksByRequestID(ID)
-				/*.ToList()
-				.AsQueryable()*/
 				.ProjectTo<RetrieveBriefLinkOutputModel>(_mapper.ConfigurationProvider);
 		}
 	}

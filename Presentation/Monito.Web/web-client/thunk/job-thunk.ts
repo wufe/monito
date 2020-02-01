@@ -79,15 +79,16 @@ export const refreshJobStatusThunk =
                     if (oldStatus !== newStatus) {
                         dispatch(addLogMessageActionBuilder(`Status: ${getStatusLabel(newStatus)}`));
                         dispatch(setJobStatus(newStatus));
-                        if (newStatus === JobStatus.INPROGRESS || newStatus === JobStatus.DONE)
+
+                        const oldDidNotRequireRealTime = [JobStatus.ACKNOWLEDGED, JobStatus.READY, JobStatus.INCOMPLETE].find(x => oldStatus) ? true : false;
+                        const newRequiresRealTime = [JobStatus.INPROGRESS, JobStatus.DONE].find(x => newStatus) ? true : false;
+                        
+                        const requiresRealTimeUpdates = oldDidNotRequireRealTime && newRequiresRealTime;
+
+                        if (requiresRealTimeUpdates)
                             dispatch(requestJobUpdates());
                     }
                 }
-                // if (newStatus !== JobStatus.INCOMPLETE &&
-                //     newStatus !== JobStatus.READY &&
-                //     newStatus !== JobStatus.INPROGRESS) {
-                //     dispatch(setStatusPolling(false));
-                // }
                 return data;
             });
     };

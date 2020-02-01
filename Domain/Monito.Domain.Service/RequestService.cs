@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using AutoMapper;
 using Monito.Database.Entities;
@@ -31,8 +32,8 @@ namespace Monito.Domain.Service {
 
 		public Request FindByGuid(Guid guid, bool limitLinks = true) {
 			var request = _requestRepository
-				.FindAll()
-				.FirstOrDefault(x => x.UUID == guid);
+				.FindAll(x => x.UUID == guid)
+				.FirstOrDefault();
 
 			if (request != null && limitLinks) {
 				request.Links = _linksRepository

@@ -28,8 +28,11 @@ func (workingQueue *WorkingQueue) Start() {
 	requestType := workingQueue.getRequestTypeByQueue()
 
 	request := <-workingQueue.orchestrator.GetRequest(requestType)
+	fmt.Println(fmt.Sprintf("Queue %s is processing the request %s.", workingQueue.UUID, request.UUID))
 	workingQueue.updateRequest(request)
 	workingQueue.startProcessingRequest(request)
+	fmt.Println(fmt.Sprintf("Queue %s finished processing the request %s.", workingQueue.UUID, request.UUID))
+	fmt.Println("############################################################")
 
 	utils.SetTimeout(workingQueue.Start, 1000)
 

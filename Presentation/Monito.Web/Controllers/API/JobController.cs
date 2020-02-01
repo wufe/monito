@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -11,6 +12,7 @@ using Monito.Domain.Service.Interface;
 using Monito.ValueObjects;
 using Monito.Web.Extensions;
 using Monito.Web.Models;
+using Monito.Web.Services;
 using Monito.Web.Services.Interface;
 
 namespace Monito.Web.Controllers.API {
@@ -60,10 +62,12 @@ namespace Monito.Web.Controllers.API {
 		[HttpGet("{userUUID:guid}/{requestUUID:guid}")]
 		public IActionResult RetrieveJob(Guid userUUID, Guid requestUUID) {
 			var request = _requestService.FindByGuid(requestUUID);
+			
 			if (request == null) {
 				return NotFound();
 			} else {
 				var linksCount = _requestService.GetLinksCountByRequestId(request.ID);
+
 				return new JsonResult(_jobService.BuildJobOutputModelFromRequest(request, linksCount));
 			}
 		}
