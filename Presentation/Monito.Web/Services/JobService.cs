@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.Extensions.Logging;
 using Monito.Database.Entities;
 using Monito.Domain.Service.Interface;
 using Monito.ValueObjects;
@@ -14,21 +16,26 @@ namespace Monito.Web.Services {
 	{
 		private readonly IMapper _mapper;
 		private readonly IRequestService _requestService;
+        private readonly IPerformanceService _performanceService;
 
-		public JobService(
+        public JobService(
 			IMapper mapper,
-			IRequestService requestService
+			IRequestService requestService,
+			IPerformanceService performanceService
 		)
 		{
 			_mapper = mapper;
 			_requestService = requestService;
+			_performanceService = performanceService;
 		}
 
 		public Request BuildRequest(SaveJobInputModel inputModel, User user)
 		{
 			var options = BuildOptionsStringFromModel(inputModel);
 
-			var links = BuildLinksFromJobModel(inputModel);
+			ICollection<Link> links;
+			using (_performanceService.Start("BuildLinksFromJobModel"))
+				links = BuildLinksFromJobModel(inputModel);
 
 			return new Request() {
 				IP      = user.IP,
@@ -40,14 +47,54 @@ namespace Monito.Web.Services {
 			};
 		}
 
+		private Uri ParseURI(string url) {
+			if (!url.StartsWith("http"))
+				url = "http://" + url;
+			try {
+				return new Uri(url);
+			}  catch (Exception) {
+				return null;
+			}
+		}
+
 		private ICollection<Link> BuildLinksFromJobModel(SaveJobInputModel inputModel) {
-			return (inputModel.Links ?? "")
+
+			var rawLinks = (inputModel.Links ?? "")
 				.Split('\n')
-				.Select(x => new Link() {
+				.Select(x => new IntermediateLink() {
 					Status = LinkStatus.Idle,
-					URL = x.Trim()
+					URL = x.Trim(),
+					URI = ParseURI(x.Trim())
 				})
-				.Where(x => !string.IsNullOrWhiteSpace(x.URL))
+				.Where(x => !string.IsNullOrWhiteSpace(x.URL) && x.URI != null);
+
+			var linksGroupedByHost = rawLinks
+				.GroupBy(x => x.URI.Host);
+
+			var hosts = linksGroupedByHost
+				.ToDictionary(x => x.Key, x => x.ToList());
+
+			var hostsEmpty = false;
+			var index = 0;
+
+			var roundedLinks = new List<IntermediateLink>();
+
+			while (!hostsEmpty) {
+				hostsEmpty = true;
+				foreach(var keyValue in hosts) {
+					if (keyValue.Value.Count > index) {
+						hostsEmpty = false;
+						roundedLinks.Add(keyValue.Value.ElementAt(index));
+					}
+				}
+				index++;
+			}
+
+			return roundedLinks
+				.Select(x => new Link() {
+					Status = x.Status,
+					URL = x.URL
+				})
 				.ToList();
 		}
 
@@ -73,6 +120,10 @@ namespace Monito.Web.Services {
 			return _requestService
 				.GetAllLinksByRequestID(ID)
 				.ProjectTo<RetrieveBriefLinkOutputModel>(_mapper.ConfigurationProvider);
+		}
+
+		private class IntermediateLink : Link {
+			public Uri URI { get; set; }
 		}
 	}
 }

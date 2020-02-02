@@ -22,6 +22,8 @@ namespace Monito.Web.Extensions {
 				.AddScoped<ISpaService, SpaService>();
 			services
 				.AddScoped<IJobUpdaterService, JobUpdaterService>();
+			services
+				.AddScoped<IPerformanceService, PerformanceService>();
 
 			services
 				.AddSingleton<IUpdatingClientsAccessor, UpdatingClientsAccessor>();
