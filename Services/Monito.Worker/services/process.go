@@ -187,12 +187,14 @@ L:
 			break L
 		// Should enter here only if request queue channel is empty and done
 		case <-*job.retrievalDoneChan:
-			fmt.Println("#004 Fetch process cannot fetch more links..")
 			*job.retrievalDoneChan <- struct{}{}
-			fmt.Println("#004 Stopping fetch process..")
-			*job.fetchDoneChan <- struct{}{}
-			fmt.Println("#004 Done")
-			break L
+			if len(job.linksChan) == 0 {
+				fmt.Println("#004 Fetch process cannot fetch more links..")
+				fmt.Println("#004 Stopping fetch process..")
+				*job.fetchDoneChan <- struct{}{}
+				fmt.Println("#004 Done")
+				break L
+			}
 		default:
 		}
 	}
@@ -204,17 +206,23 @@ L:
 func (job *JobProcess) performLinkRequest() <-chan struct{} {
 	doneChan := make(chan struct{}, 1)
 	go func() {
-		select {
-		// If there are no links to be retrieved
-		case <-*job.retrievalDoneChan:
-			// anyway, restore the situation
-			*job.retrievalDoneChan <- struct{}{}
-			doneChan <- struct{}{}
-		case link := <-job.linksChan:
-			<-NewHTTPRequestService(link, job).Send()
-			utils.SetTimeout(func() {
-				doneChan <- struct{}{}
-			}, 1000)
+	L:
+		for {
+			select {
+			case <-*job.retrievalDoneChan:
+				*job.retrievalDoneChan <- struct{}{}
+				if len(job.linksChan) == 0 {
+					doneChan <- struct{}{}
+					break L
+				}
+
+			case link := <-job.linksChan:
+				<-NewHTTPRequestService(link, job).Send()
+				utils.SetTimeout(func() {
+					doneChan <- struct{}{}
+				}, 1000)
+				break L
+			}
 		}
 	}()
 	return doneChan
