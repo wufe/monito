@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './input-form.scss';
 import { JobRequestFormFields, JobHTTPMethod } from '~/types/job';
+import { Link } from 'react-router-dom';
 
 type Props = {
     onSubmit: (fields: JobRequestFormFields) => any;
@@ -17,8 +18,14 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
         redirects: 5,
         threads: 4,
         timeout: 10000,
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
+        tosAgreement: false
     });
+
+    const [fieldError, setFieldError] = React.useState<{[k in keyof JobRequestFormFields]?: boolean}>({
+        links       : false,
+        tosAgreement: false,
+    })
 
     const minRedirects    = 0;
     const maxRedirects    = 10;
@@ -62,8 +69,15 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
     // TODO: Check whether there's been an upload before checking links
     // TODO: Display a proper error message
     const trySubmit = () => {
-        if (!fields.links.trim())
+        if (!fields.links.trim()) {
+            setFieldError({...fieldError, links: true});
             return alert('Paste some link');
+        }
+        if (!fields.tosAgreement) {
+            setFieldError({...fieldError, tosAgreement: true});
+            return alert('You must agree to terms of service first');
+        }
+        setFieldError({});
         props.onSubmit(fields)
     };
 
@@ -126,7 +140,18 @@ export const InputForm = (props: React.PropsWithChildren<Props>) => {
                         onClick={() => setAdvancedSettingsVisibility(!advancedSettingsVisibility)}>
                         {advancedSettingsVisibility ? 'Hide' : 'Show'} advanced settings
                     </div>
+                    <div className={`__tos-agreement ${fieldError.tosAgreement ? '--required' : ''}`}>
+                        <label>
+                            <span>I agree to the <Link to="/tos" target="_blank">terms of service</Link></span>
+                            <input
+                                disabled={props.disabled}
+                                type="checkbox"
+                                onChange={e => setField('tosAgreement')(e.target.checked)}
+                                checked={fields.tosAgreement}  />
+                        </label>
+                    </div>
                 </div>
+                
                 <div className="__actions-container">
                     <button
                         disabled={props.disabled}

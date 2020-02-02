@@ -17,6 +17,9 @@ export const getStatusLabel = (status: string) => {
         case JobStatus.INPROGRESS:
             label = "In progress";
             break;
+        case JobStatus.ABORTED:
+            label = "Aborted";
+            break;
     }
     return label;
 }
@@ -141,3 +144,17 @@ export const downloadCSV =
             }, 2000);
         });
     };
+
+export const abortJob =
+    (userUUID: string, jobUUID: string): ApplicationThunkAction<any> =>
+    dispatch => {
+        dispatch(setStatusPolling(false));
+        const url = `/api/job/${userUUID}/${jobUUID}/abort`;
+        return Axios.post(url)
+            .then(() => {
+                dispatch(setJobStatus(JobStatus.ABORTED));
+            })
+            .finally(() => {
+                dispatch(setStatusPolling(true));
+            });
+    }

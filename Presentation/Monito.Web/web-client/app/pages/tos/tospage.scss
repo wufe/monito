@@ -1,0 +1,11 @@
+@import "~/styles/main";
+
+.tos-page__component {
+    padding: 30px 0 20px 0;
+    background: linear-gradient(0deg, rgba(25, 28, 34, .0) 0%, rgba(25, 28, 34, 0.4) 90%, rgba(25, 28, 34, 0.5) 100%);
+
+    .__container {
+        @include container;
+        color: $nord6;
+    }
+}

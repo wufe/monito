@@ -119,11 +119,40 @@
                     margin: 20px 0 0 0;
                     cursor: pointer;
                     user-select: none;
+                    text-decoration: underline;
 
                     @include small-only {
                         width: 100%;
                         text-align: center;
                     }
+                }
+
+                .__tos-agreement {
+                    font-size: 1rem;
+                    margin: 20px 0 0 0;
+                    color: $nord6;
+                    display: inline-block;
+                    border-radius: 3px;
+
+                    &.--required {
+                        border: 1px solid $nord12;
+                    }
+                    
+                    label {
+                        display: flex;
+                        align-items: center;
+
+                        span {
+                            display: inline-block;
+                            margin-right: 10px;
+                        }
+
+                        a {
+                            color: inherit;
+                        }
+                    }
+
+                    
                 }
             }
             .__actions-container {

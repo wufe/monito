@@ -28,6 +28,7 @@ namespace Monito.Database.Entities {
 		Ready        = 1,
 		Acknowledged = 2,
 		InProgress   = 3,
-		Done         = 4
+		Done         = 4,
+		Aborted      = 5,
 	}
 }

@@ -64,6 +64,33 @@
         }
 
     }
+
+    &.--danger {
+        background: darken($nord11, 10%);
+        color: $nord6;
+        border-width: 0;
+
+        box-shadow: 0 0 8px rgba($nord0, .3),
+            inset -1px 0 0 rgba($nord6, .1),
+			inset 0 -1px 0 rgba($nord6, .05),
+			inset 1px 0 0 rgba($nord6, .05),
+			inset 0 1px 0 rgba($nord6, .05);
+
+        &:hover {
+            background: darken($nord11, 5%);
+        }
+        
+        &:active {
+            background: darken($nord11, 15%);
+            box-shadow: inset 0 0 8px rgba($nord0, .4);
+        }
+
+        &.--disabled {
+            background: desaturate(darken($nord11, 1%), 10%);
+            opacity: .8;
+            pointer-events: none;
+        }
+    }
 }
 
 %input-label {

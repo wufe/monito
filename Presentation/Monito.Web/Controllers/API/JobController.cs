@@ -82,11 +82,23 @@ namespace Monito.Web.Controllers.API {
 			}
 		}
 
+		[HttpPost("{userUUID:guid}/{requestUUID:guid}/abort")]
+		public IActionResult AbortJob (Guid userUUID, Guid requestUUID){
+			var request = _requestService.FindByGuid(requestUUID);
+			if (request == null) {
+				return NotFound();
+			} else {
+				_requestService.Abort(request);
+				return Ok();
+			}
+		}
+
 		[HttpGet("{userUUID:guid}/{requestUUID:guid}/download/csv")]
 		public IActionResult DownloadJobAsCSV(Guid userUUID, Guid requestUUID)
 		{
 			var request = _requestService.FindByGuid(requestUUID, false);
-			if (request == null || request.Status != RequestStatus.Done)
+			if (request == null ||
+				(request.Status != RequestStatus.Done && request.Status != RequestStatus.Aborted))
 			{
 				return NotFound();
 			}

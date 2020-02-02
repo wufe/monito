@@ -5,7 +5,7 @@ import { GlobalState } from '~/state/state';
 import { JobStatus, JobModel } from '~/types/job';
 import { ApplicationThunkDispatch } from '~/thunk/thunk';
 import { useParams } from 'react-router-dom';
-import { downloadCSV } from '~/thunk/job-thunk';
+import { downloadCSV, abortJob } from '~/thunk/job-thunk';
 
 export const ActionsContainer = () => {
 
@@ -15,6 +15,8 @@ export const ActionsContainer = () => {
 		CSV : false,
 		JSON: false,
 	});
+
+	const [aborting, setAborting] = React.useState(false);
 
 	const job = useSelector<GlobalState, JobModel>(state => {
 		if (!state.job.job)
@@ -50,12 +52,32 @@ export const ActionsContainer = () => {
 		});
 	}
 
-	return status === JobStatus.DONE && <Actions
-		isDownloadingCSV={downloading.CSV}
-		isDownloadingJSON={downloading.JSON}
-		onDownloadCSVClick={onDownloadCSVClick}
-		onDownloadJSONClick={onDownloadJSONClick}
-		showTruncatedMessage={showTruncatedMessage}
-		showAvatar={showAvatar}
-		 />;
+	const onAbortClick = () => {
+		setAborting(true);
+		dispatch(abortJob(userUUID, jobUUID));
+	}
+
+	if (status === JobStatus.DONE || status === JobStatus.ABORTED) {
+		return <Actions
+			downloadCSV
+			isDownloadingCSV={downloading.CSV}
+			onDownloadCSVClick={onDownloadCSVClick}
+			downloadJSON
+			isDownloadingJSON={downloading.JSON}
+			onDownloadJSONClick={onDownloadJSONClick}
+			showTruncatedMessage={showTruncatedMessage}
+			showAvatar={showAvatar}
+		/>;
+	}
+	if (status === JobStatus.INPROGRESS || status === JobStatus.READY) {
+		return <Actions
+			abortJob
+			isAbortingJob={aborting}
+			onAbortJobClick={onAbortClick}
+			showTruncatedMessage={showTruncatedMessage}
+			showAvatar={false}
+		/>;
+	}
+	return null;
+
 }

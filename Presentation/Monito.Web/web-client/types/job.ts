@@ -6,12 +6,13 @@ export enum JobHTTPMethod {
 }
 
 export type JobRequestFormFields = {
-    links     : string;
-    method    : JobHTTPMethod;
-    redirects : number;
-    threads   : number;
-    timeout   : number;
-    userAgent : string;
+    links       : string;
+    method      : JobHTTPMethod;
+    redirects   : number;
+    threads     : number;
+    timeout     : number;
+    userAgent   : string;
+    tosAgreement: boolean;
 }
 
 export enum JobRequestType {

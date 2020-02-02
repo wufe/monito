@@ -62,5 +62,11 @@ namespace Monito.Domain.Service {
 				.Include(x => x.RedirectsTo)
 				.Where(x => x.RequestID == ID);
 		}
+
+		public void Abort(Request request) {
+			request.Status = RequestStatus.Aborted;
+			_requestRepository.Update(request);
+			_requestRepository.SaveChanges();
+		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"sync"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -15,7 +16,7 @@ import (
 
 func main() {
 
-	// runtime.GOMAXPROCS(runtime.NumCPU())
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	parsedCliArguments := cli.ParseCliArguments(os.Args)
 

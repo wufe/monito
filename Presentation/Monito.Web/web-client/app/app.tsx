@@ -10,12 +10,14 @@ import LargeBackground from '~/assets/3323904.png';
 
 const LazyJobPageBuilder = LazyBuilder(import('~/app/pages/job/jobpage'));
 const LazyHomePageBuilder = LazyBuilder(import('~/app/pages/home/homepage'));
+const LazyTOSPageBuilder = LazyBuilder(import('~/app/pages/tos/tospage'));
 
 export const App = () => {
 
     const dispatch = useDispatch();
     const JobPage = LazyJobPageBuilder(dispatch);
     const HomePage = LazyHomePageBuilder(dispatch);
+    const TOSPage = LazyTOSPageBuilder(dispatch);
 
     return <div className="app__component">
         <div className="__background">
@@ -33,6 +35,11 @@ export const App = () => {
             <Route path="/job/:userUUID/:jobUUID">
                 <React.Suspense fallback="">
                     <JobPage />
+                </React.Suspense>
+            </Route>
+            <Route path="/tos">
+                <React.Suspense fallback="">
+                    <TOSPage />
                 </React.Suspense>
             </Route>
         </Switch>
