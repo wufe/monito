@@ -3,11 +3,11 @@ package services
 import (
 	"encoding/json"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/wufe/monito/worker/models"
+	"github.com/wufe/monito/worker/services/process"
 	"github.com/wufe/monito/worker/utils"
 )
 
@@ -15,9 +15,9 @@ type JobProcess struct {
 	request           *models.Request
 	options           *models.RequestOptions
 	db                *gorm.DB
-	retrievalDoneChan *chan struct{}
-	fetchDoneChan     *chan struct{}
-	stopChan          *chan struct{}
+	retrievalDoneChan chan struct{}
+	fetchDoneChan     chan struct{}
+	stopChan          chan struct{}
 	linksChan         chan *models.Link
 }
 
@@ -32,16 +32,16 @@ func (job *JobProcess) Start() {
 	job.resetLinks()
 	job.loadOptions()
 
-	stopChan := make(chan struct{}, 1)
-	job.stopChan = &stopChan
-	retrievalDoneChan := make(chan struct{}, 1)
-	job.retrievalDoneChan = &retrievalDoneChan
-	fetchDoneChan := make(chan struct{}, 1)
-	job.fetchDoneChan = &fetchDoneChan
+	job.stopChan = make(chan struct{}, 1)
+	job.fetchDoneChan = make(chan struct{}, 1)
+	job.linksChan = make(chan *models.Link, 1)
+	job.retrievalDoneChan = make(chan struct{}, 1)
 
 	job.startStatusCheckProcess()
 	job.startLinkRetrievalProcess()
 	job.startFetch()
+
+	job.cleanup()
 }
 
 // Recover from inconsistent state
@@ -68,139 +68,49 @@ func (job *JobProcess) loadOptions() {
 }
 
 func (job *JobProcess) startStatusCheckProcess() {
+	doneChan := process.
+		NewStatusCheckProcess(job.db, job.request, job.retrievalDoneChan, job.fetchDoneChan).
+		Start()
+
+	go func() {
+		<-doneChan
+		job.stopChan <- struct{}{}
+
+		emptyAndCloseLinksChan(job.linksChan)
+
+		close(doneChan)
+	}()
+}
+
+func (job *JobProcess) startLinkRetrievalProcess() {
+	linksChan, doneChan := process.
+		NewLinkRetrievalProcess(job.db, job.request, job.options, job.stopChan).
+		Start()
+
+	job.linksChan = linksChan
+
 	go func() {
 	L:
 		for {
 			select {
-			case <-*job.retrievalDoneChan:
-				fmt.Println("#001 Status check process ending because there are no more links to be requested..")
-				*job.retrievalDoneChan <- struct{}{}
-				fmt.Println("#001 Done.")
-				break L
-			case <-*job.fetchDoneChan:
-				fmt.Println("#002 Status check process ending because the fetch process has done..")
-				*job.fetchDoneChan <- struct{}{}
-				fmt.Println("#002 Done.")
+			case <-doneChan:
+				close(doneChan)
+				job.retrievalDoneChan <- struct{}{}
 				break L
 			default:
-				status := job.getJobStatus()
-				if status == models.RequestStatusAbort {
-					fmt.Println("#003 Status check process ending because abortion has been requested..")
-					*job.stopChan <- struct{}{}
-					fmt.Println("#003 Done.")
-					break L
-				}
-				time.Sleep(500 * time.Millisecond)
 			}
 		}
 	}()
-}
-
-func (job *JobProcess) getJobStatus() models.RequestStatus {
-
-	foundRequest := models.Request{}
-
-	job.db.Model(&models.Request{}).
-		Where(&models.Request{ID: job.request.ID}).
-		First(&foundRequest)
-
-	job.request.Status = foundRequest.Status
-
-	return foundRequest.Status
-}
-
-func (job *JobProcess) startLinkRetrievalProcess() {
-	job.linksChan = make(chan *models.Link, job.options.Threads)
-	go func() {
-		job.retrievalProcess()
-	}()
-}
-
-func (job *JobProcess) retrievalProcess() {
-	var lastLinkID uint
-L:
-	for {
-		select {
-		case <-*job.stopChan:
-			*job.stopChan <- struct{}{}
-			fmt.Println("Retrieval process aborted.")
-			break L
-		default:
-			link := job.getLink(lastLinkID)
-			if link.ID > 0 {
-				lastLinkID = link.ID
-				job.linksChan <- link
-			} else {
-				*job.retrievalDoneChan <- struct{}{} // <- 1
-				break L
-			}
-		}
-	}
-
-	job.request.Status = models.RequestStatusDone
-
-	job.db.Model(&models.Request{}).
-		Update(job.request)
-
-	fmt.Println("Retrieval queue process ended.")
-}
-
-func (job *JobProcess) getLink(greaterThanID uint) *models.Link {
-
-	foundLink := models.Link{}
-
-	job.db.Model(&models.Link{}).
-		Where("request_id = ? AND status = ? AND id > ?", job.request.ID, models.LinkStatusIdle, greaterThanID).
-		First(&foundLink)
-
-	if foundLink.ID > 0 {
-		job.db.Model(&foundLink).
-			Where(&models.Link{ID: foundLink.ID}).
-			Update(map[string]interface{}{"status": models.LinkStatusAcknowledged, "updated_at": time.Now()})
-	}
-
-	return &foundLink
 }
 
 func (job *JobProcess) startFetch() {
+	doneChan := process.
+		NewFetchProcess(job.db, job.request, job.options, job.stopChan, job.retrievalDoneChan, job.linksChan, job.performLinkRequest).
+		Start()
 
-	requestQueueChannel := make(chan struct{}, job.options.Threads)
-	for i := 0; i < job.options.Threads; i++ {
-		requestQueueChannel <- struct{}{}
-	}
-
-	var wg sync.WaitGroup
-
-L:
-	for {
-		select {
-		case <-requestQueueChannel:
-			go func() {
-				wg.Add(1)
-				<-job.performLinkRequest()
-				requestQueueChannel <- struct{}{}
-				wg.Done()
-			}()
-		case <-*job.stopChan:
-			*job.stopChan <- struct{}{}
-			fmt.Println("Fetch process aborted")
-			break L
-		// Should enter here only if request queue channel is empty and done
-		case <-*job.retrievalDoneChan:
-			*job.retrievalDoneChan <- struct{}{}
-			if len(job.linksChan) == 0 {
-				fmt.Println("#004 Fetch process cannot fetch more links..")
-				fmt.Println("#004 Stopping fetch process..")
-				*job.fetchDoneChan <- struct{}{}
-				fmt.Println("#004 Done")
-				break L
-			}
-		default:
-		}
-	}
-
-	wg.Wait()
-	fmt.Println(fmt.Sprintf("Process ended for request #%d", job.request.ID))
+	<-doneChan
+	close(doneChan)
+	job.fetchDoneChan <- struct{}{}
 }
 
 func (job *JobProcess) performLinkRequest() <-chan struct{} {
@@ -209,8 +119,8 @@ func (job *JobProcess) performLinkRequest() <-chan struct{} {
 	L:
 		for {
 			select {
-			case <-*job.retrievalDoneChan:
-				*job.retrievalDoneChan <- struct{}{}
+			case <-job.retrievalDoneChan:
+				job.retrievalDoneChan <- struct{}{}
 				if len(job.linksChan) == 0 {
 					doneChan <- struct{}{}
 					break L
@@ -226,4 +136,24 @@ func (job *JobProcess) performLinkRequest() <-chan struct{} {
 		}
 	}()
 	return doneChan
+}
+
+func (job *JobProcess) cleanup() {
+	close(job.stopChan)
+	close(job.retrievalDoneChan)
+	close(job.fetchDoneChan)
+	emptyAndCloseLinksChan(job.linksChan)
+}
+
+// When a job is aborted, the links channel might not be empty
+// and a go routine is waiting the opportunity to enqueue an item.
+// So we first try to free its queue and then close it.
+func emptyAndCloseLinksChan(c chan *models.Link) {
+	select {
+	case _, ok := <-c:
+		if ok {
+			close(c)
+		}
+	default:
+	}
 }
