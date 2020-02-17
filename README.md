@@ -7,7 +7,7 @@ Provides a web UI for submission with a queue system on the background.
 [![Mònito][image]][hyperlink]
 
   [hyperlink]: https://monito.bembi.dev
-  [image]: https://raw.githubusercontent.com/wufe/mònito/master/.img/compressed-wide.jpg (Mònito)
+  [image]: https://raw.githubusercontent.com/wufe/monito/master/.img/compressed-wide.jpg (Mònito)
 
 ## How to
 
