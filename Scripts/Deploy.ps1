@@ -10,7 +10,11 @@ param (
 
 	[Parameter()]
 	[switch]
-	$SkipRebuild
+	$SkipRebuild,
+
+	[Parameter()]
+	[switch]
+	$ShowLogs
 )
 
 if ($Branch -eq "") {
@@ -157,6 +161,8 @@ Write-Host "Deploying..";
 		git stash
 	}
 
-	docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml logs -f
+	if ($ShowLogs) {
+		docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml logs -f
+	}
 
 #endregion
