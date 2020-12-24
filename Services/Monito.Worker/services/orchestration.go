@@ -30,13 +30,13 @@ func (orchestrator *QueueOrchestrator) Init() *QueueOrchestrator {
 	return orchestrator
 }
 
-func (orchestrator *QueueOrchestrator) StartQueues() {
-	go func() {
-		for _, queue := range orchestrator.queues {
-			NewWorkingQueue(orchestrator, queue, orchestrator.db).Start()
-		}
-	}()
-}
+// func (orchestrator *QueueOrchestrator) StartQueues() {
+// 	go func() {
+// 		for _, queue := range orchestrator.queues {
+// 			NewWorkingQueue(orchestrator, queue, orchestrator.db).Start()
+// 		}
+// 	}()
+// }
 
 func (orchestrator *QueueOrchestrator) GetRequest(requestType models.RequestType) chan *models.Request {
 	return orchestrator.enqueueRequestRetrieval(requestType)

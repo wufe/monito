@@ -6,7 +6,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/wufe/monito/worker/models"
-	"github.com/wufe/monito/worker/utils"
 )
 
 type WorkingQueue struct {
@@ -23,18 +22,18 @@ func NewWorkingQueue(orchestrator *QueueOrchestrator, queue *models.Queue, db *g
 	}
 }
 
-func (workingQueue *WorkingQueue) Start() {
+// func (workingQueue *WorkingQueue) Start() {
+func (workingQueue *WorkingQueue) Work(request *models.Request) {
+	// requestType := workingQueue.getRequestTypeByQueue()
 
-	requestType := workingQueue.getRequestTypeByQueue()
-
-	request := <-workingQueue.orchestrator.GetRequest(requestType)
+	// request := <-workingQueue.orchestrator.GetRequest(requestType)
 	fmt.Println(fmt.Sprintf("Queue %s is processing the request %s.", workingQueue.UUID, request.UUID))
 	workingQueue.updateRequest(request)
 	workingQueue.startProcessingRequest(request)
 	fmt.Println(fmt.Sprintf("Queue %s finished processing the request %s.", workingQueue.UUID, request.UUID))
 	fmt.Println("############################################################")
 
-	utils.SetTimeout(workingQueue.Start, 1000)
+	// utils.SetTimeout(workingQueue.Start, 1000)
 
 }
 
@@ -49,7 +48,8 @@ func (workingQueue *WorkingQueue) startProcessingRequest(request *models.Request
 	NewJob(request, workingQueue.db).Start()
 }
 
-func (workingQueue *WorkingQueue) getRequestTypeByQueue() models.RequestType {
+func (workingQueue *WorkingQueue) GetRequestTypeByQueue() models.RequestType {
+	// func (workingQueue *WorkingQueue) getRequestTypeByQueue() models.RequestType {
 	var requestType models.RequestType
 
 	switch workingQueue.Queue.Type {
