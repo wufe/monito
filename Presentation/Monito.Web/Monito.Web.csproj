@@ -1,19 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\Monito.Database.Entities\Monito.Database.Entities.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Monito.Database.EFCore\Monito.Database.EFCore.csproj" />
-    <ProjectReference Include="..\..\Data\Monito.Repository.Interface\Monito.Repository.Interface.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Monito.Repository.EFCore\Monito.Repository.EFCore.csproj" />
     <ProjectReference Include="..\..\Domain\Monito.Domain.Service\Monito.Domain.Service.csproj" />
     <ProjectReference Include="..\..\Data\Monito.ValueObjects\Monito.ValueObjects.csproj" />
     <ProjectReference Include="..\..\Data\Monito.Enums\Monito.Enums.csproj" />
-    <ProjectReference Include="..\Monito.Web.Integration\Monito.Web.Integration.csproj" />
+    <ProjectReference Include="..\..\Persistence\Monito.Persistence.Database.MySQL\Monito.Persistence.Database.MySQL.csproj" />
+    <ProjectReference Include="..\..\Persistence\Monito.Persistence.Configuration\Monito.Persistence.Configuration.csproj" />
+    <ProjectReference Include="..\..\Domain\Monito.Domain.Configuration\Monito.Domain.Configuration.csproj" />
+    <ProjectReference Include="..\..\Application\Monito.Application.Model\Monito.Application.Model.csproj" />
+    <ProjectReference Include="..\..\Application\Monito.Application.Configuration\Monito.Application.Configuration.csproj" />
+    <ProjectReference Include="..\..\Application\Monito.Application.Services\Monito.Application.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Automapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="CsvHelper" Version="12.2.3" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.0" />

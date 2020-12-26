@@ -1,6 +1,7 @@
 using System;
 
 namespace Monito.ValueObjects.Output {
+	// TODO: Delete
 	public class RetrieveBriefLinkOutputModel {
 		public int ID { get; set; }
 		public string URL { get; set; }

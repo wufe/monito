@@ -1,6 +1,7 @@
 using System;
 
 namespace Monito.ValueObjects.Output {
+	// TODO: Delete
 	public class RetrieveLinkOutputModel : RetrieveBriefLinkOutputModel {
 		public Guid UUID { get; set; }
 		public DateTime CreatedAt { get; set; }

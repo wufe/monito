@@ -1,13 +1,11 @@
-using System;
-using System.Text.Json.Serialization;
-using Monito.Database.Entities;
+namespace Monito.ValueObjects.Output
+{
+	// TODO: Delete
+    public class RetrieveJobStatusOutputModel {
 
-namespace Monito.ValueObjects.Output {
-	public class RetrieveJobStatusOutputModel {
+		// [JsonConverter(typeof(JsonStringEnumConverter))]
+		// public RequestStatus Status { get; set; }
 
-		[JsonConverter(typeof(JsonStringEnumConverter))]
-		public RequestStatus Status { get; set; }
-
-		public DateTime UpdatedAt { get; set; }
+		// public DateTime UpdatedAt { get; set; }
 	}
 }

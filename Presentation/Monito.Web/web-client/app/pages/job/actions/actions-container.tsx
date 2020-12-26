@@ -10,7 +10,7 @@ import { downloadCSV, abortJob } from '~/thunk/job-thunk';
 export const ActionsContainer = () => {
 
 	const dispatch = useDispatch<ApplicationThunkDispatch>();
-	const { userUUID, jobUUID } = useParams();
+	const { userUUID, jobUUID } = useParams<{ userUUID: string; jobUUID: string; }>();
 	const [downloading, setDownloading] = React.useState({
 		CSV : false,
 		JSON: false,
@@ -26,7 +26,7 @@ export const ActionsContainer = () => {
 
 	const status = job && job.status;
 
-	const showTruncatedMessage = job === null ? false : (job.linksCount && job.linksCount > job.links.length);
+	const showTruncatedMessage = job === null ? false : (job.doneLinksCount && job.doneLinksCount > job.links.length);
 
 	let showAvatar = true;
 	if (showTruncatedMessage)

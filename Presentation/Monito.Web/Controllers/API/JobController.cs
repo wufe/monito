@@ -1,23 +1,25 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using AutoMapper;
 using CsvHelper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Monito.Database.Entities;
+using Monito.Application.Model;
+using Monito.Application.Model.Command;
+using Monito.Application.Model.Query;
 using Monito.Domain.Service.Interface;
 using Monito.ValueObjects;
 using Monito.Web.Extensions;
 using Monito.Web.Models;
-using Monito.Web.Services;
 using Monito.Web.Services.Interface;
 
-namespace Monito.Web.Controllers.API {
+namespace Monito.Web.Controllers.API
+{
 
-	[ApiController]
+    [ApiController]
 	[Route("api/[controller]")]
 	public class JobController : ControllerBase {
 		private readonly IJobService _jobService;
@@ -25,13 +27,17 @@ namespace Monito.Web.Controllers.API {
 		private readonly IRequestService _requestService;
 		private readonly IUserService _userService;
 		private readonly ILogger<JobController> _logger;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-		public JobController(
+        public JobController(
 			IJobService jobService,
 			IHttpRequestService httpRequestService,
 			IRequestService requestService,
 			IUserService userService,
-			ILogger<JobController> logger
+			ILogger<JobController> logger,
+			IMapper mapper,
+			IMediator mediator
 		)
 		{
 			_jobService         = jobService;
@@ -39,19 +45,24 @@ namespace Monito.Web.Controllers.API {
 			_requestService     = requestService;
 			_userService        = userService;
 			_logger             = logger;
+			_mapper             = mapper;
+			_mediator           = mediator;
 		}
 
 		[HttpPost("save")]
-		public IActionResult SaveJob([FromBody]SaveJobInputModel inputModel) {
+		public async Task<IActionResult> SaveJob([FromBody]SaveJobInputModel inputModel) {
 			if (ModelState.IsValid) {
+
 				var userIP = _httpRequestService.GetIP();
+				var user = await _mediator.Send(UpsertUserByRequestIPCommand.Build(userIP));
+
 				_logger.LogInformation("The user with IP " + userIP + " requested a job.");
-				var user = _userService.FindOrCreateUserByIP(userIP);
-				var request = _jobService.BuildRequest(inputModel, user);
-				_requestService.Add(request);
+
+				var requestUUID = await _mediator.Send(_mapper.Map<SaveJobInputModel, SaveJobCommand>(inputModel, SaveJobCommand.Build(userIP, user.ID)));
+
 				return new JsonResult(new {
 					userUUID = user.UUID,
-					requestUUID = request.UUID
+					requestUUID = requestUUID
 				});
 			} else {
 				// TODO: Return detailed error message
@@ -60,56 +71,46 @@ namespace Monito.Web.Controllers.API {
 		}
 
 		[HttpGet("{userUUID:guid}/{requestUUID:guid}")]
-		public IActionResult RetrieveJob(Guid userUUID, Guid requestUUID) {
-			var request = _requestService.FindByGuid(requestUUID);
+		public async Task<IActionResult> RetrieveJob(Guid userUUID, Guid requestUUID) {
+			var request = await _mediator.Send(GetRequestByUUIDQuery.Build(requestUUID));
 			
 			if (request == null) {
 				return NotFound();
 			} else {
-				var linksCount = _requestService.GetLinksCountByRequestId(request.ID);
-
-				return new JsonResult(_jobService.BuildJobOutputModelFromRequest(request, linksCount));
+				return new JsonResult(request);
 			}
 		}
 
 		[HttpGet("{userUUID:guid}/{requestUUID:guid}/status")]
-		public IActionResult RetrieveJobStatus(Guid userUUID, Guid requestUUID) {
-			var request = _requestService.FindByGuid(requestUUID);
+		public async Task<IActionResult> RetrieveJobStatus(Guid userUUID, Guid requestUUID) {
+
+			var request = await _mediator.Send(GetRequestStatusByUUIDQuery.Build(requestUUID));
+
 			if (request == null) {
 				return NotFound();
 			} else {
-				return new JsonResult(_jobService.BuildJobStatusOutputModelFromRequest(request));
+				return new JsonResult(request);
 			}
 		}
 
 		[HttpPost("{userUUID:guid}/{requestUUID:guid}/abort")]
-		public IActionResult AbortJob (Guid userUUID, Guid requestUUID){
-			var request = _requestService.FindByGuid(requestUUID);
-			if (request == null) {
-				return NotFound();
-			} else {
-				_requestService.Abort(request);
-				return Ok();
-			}
+		public async Task<IActionResult> AbortJob (Guid userUUID, Guid requestUUID){
+			await _mediator.Send(AbortRequestCommand.Build(requestUUID));
+			return Ok();
 		}
 
 		[HttpGet("{userUUID:guid}/{requestUUID:guid}/download/csv")]
-		public IActionResult DownloadJobAsCSV(Guid userUUID, Guid requestUUID)
+		public async Task<IActionResult> DownloadJobAsCSV(Guid userUUID, Guid requestUUID)
 		{
-			var request = _requestService.FindByGuid(requestUUID, false);
-			if (request == null ||
-				(request.Status != RequestStatus.Done && request.Status != RequestStatus.Aborted))
-			{
+			var links = await _mediator.Send(GetRequestLinksByUUIDQuery.Build(requestUUID));
+			if (links == null)
 				return NotFound();
-			}
-
-			var links = _jobService.GetLinksForDownloadByRequestID(request.ID);
 
 			return new FileCallbackResult(new MediaTypeHeaderValue("text/csv"), async (outputStream, _) =>
 			{
 				var writer = new StreamWriter(HttpContext.Response.Body);
 				var csv = new CsvWriter(writer);
-				csv.Configuration.RegisterClassMap<RetrieveBriefLinkOutputModelCSVMap>();
+				csv.Configuration.RegisterClassMap<MinimalLinkApplicationModelCSVMap>();
 				csv.WriteRecords(links);
 				await writer.FlushAsync();
 			})

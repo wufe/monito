@@ -1,12 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\Monito.Database.Entities\Monito.Database.Entities.csproj" />
-    <ProjectReference Include="..\..\Data\Monito.Repository.Interface\Monito.Repository.Interface.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Automapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
   </ItemGroup>
 

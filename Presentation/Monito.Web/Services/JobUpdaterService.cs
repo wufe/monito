@@ -1,28 +1,26 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Monito.Database.Entities;
-using Monito.Domain.Service.Interface;
-using Monito.ValueObjects.Output;
-using Monito.Web.Services.Interface;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Monito.Application.Model.Query;
+using Monito.Domain.Service.Interface;
+using Monito.Web.Services.Interface;
 
-namespace Monito.Web.Services {
-	public class JobUpdaterService : IJobUpdaterService, IHostedService {
+namespace Monito.Web.Services
+{
+    public class JobUpdaterService : IJobUpdaterService, IHostedService {
 
 		ILogger<IJobUpdaterService> _logger;
 		IUpdatingClientsAccessor _clientsAccessor;
 		private readonly IMapper _mapper;
 		private readonly IServiceScopeFactory _serviceScopeFactory;
-		private Timer _timer;
+        private Timer _timer;
 
 		public JobUpdaterService(
 			ILogger<IJobUpdaterService> logger,
@@ -52,14 +50,13 @@ namespace Monito.Web.Services {
 
 				var linkService = scope.ServiceProvider.GetRequiredService<ILinkService>();
 				var logger = scope.ServiceProvider.GetRequiredService<ILogger<IJobUpdaterService>>();
+				var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
 				foreach (var client in _clientsAccessor.Clients)
 				{
-					var links = linkService.GetDoneLinksAfterID(client.LastLinkID, client.RequestID)
-						.ProjectTo<RetrieveLinkOutputModel>(_mapper.ConfigurationProvider)
-						.ToList();
+					var links = await mediator.Send(GetDoneRequestLinksByRequestIDAfterIDQuery.Build(client.RequestID, client.LastLinkID));
 
-					if (links.Count > 0) {
+					if (links.Count() > 0) {
 						await client.Client.SendAsync("RetrieveUpdatedClients", links);
 						client.LastLinkID = links.Last().ID;
 					}

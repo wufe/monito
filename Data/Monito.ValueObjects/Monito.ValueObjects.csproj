@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Monito.Database.Entities\Monito.Database.Entities.csproj" />
     <ProjectReference Include="..\Monito.Enums\Monito.Enums.csproj" />
   </ItemGroup>
 

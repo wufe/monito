@@ -8,9 +8,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Monito.Persistence.Configuration.DependencyInjection;
+using Monito.Web.Configuration.DependencyInjection;
 using Monito.Web.Extensions;
 using Monito.Web.Hubs;
-using Monito.Web.Integration;
+using Monito.Domain.Configuration.DependencyInjection;
+using Monito.Web.Configuration.Mapping;
+using Monito.Application.Configuration.Mapping;
+using Monito.Application.Model.Command;
+using MediatR;
+using AutoMapper;
+using Monito.Application.Services;
+using Monito.Application.Services.Command;
+using System.Text.Json.Serialization;
 
 namespace Monito.Web
 {
@@ -28,13 +38,34 @@ namespace Monito.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR(conf => conf.EnableDetailedErrors = true);
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(options => {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             services.AddHttpUtils();
+
+            services.AddAutoMapper(
+                typeof(PresentationApplicationMappingProfile),
+                typeof(PersistenceApplicationMappingProfile),
+                typeof(DomainPersistenceMappingProfile)
+            );
+
+            #region Application
+            services.AddMediatR(typeof(SaveJobCommand), typeof(SaveJobCommandHandler));
+            #endregion
+
+            #region Persistence 
             services.AddDatabase(Configuration.GetSection("ConnectionString").Value);
-            services.AddRepositories();
+            services.AddMonitoDbContext();
+            services.AddGenericRepositories();
+            #endregion
+
+            #region Domain
             services.AddDomainServices();
+            #endregion
+
+            #region Presentation
             services.AddPresentationServices();
-            services.AddAutomapperConfigurations();
             services.AddCors(options => {
                 options.AddPolicy(_allowDomainCorsPolicy, builder =>
                     builder.WithOrigins("http://localhost:8008", "https://monito.bembi.dev")
@@ -45,6 +76,7 @@ namespace Monito.Web
             {
                 options.AllowSynchronousIO = true;
             });
+            #endregion
 
         }
 

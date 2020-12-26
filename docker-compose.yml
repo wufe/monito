@@ -21,7 +21,7 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     volumes:
-      - ./Infrastructure/DatabaseScripts.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./Persistence/Monito.Persistence.MySQL.Scripts/DatabaseScripts.sql:/docker-entrypoint-initdb.d/init.sql
   pma:
     image: phpmyadmin/phpmyadmin:5.0
     container_name: monito-pma

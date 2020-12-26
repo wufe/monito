@@ -44,7 +44,7 @@ export type JobModel = JobStatuModel & {
     id        : number;
     type      : JobRequestType;
     createdAt : string;
-    linksCount: number | null;
+    doneLinksCount: number | null;
     links     : LinkModel[];
     options   : {
         method   : JobHTTPMethod;

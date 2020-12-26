@@ -2,6 +2,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Monito.Application.Model;
 using Monito.ValueObjects.Output;
 using Monito.Web.Services;
 using Monito.Web.Services.Interface;
@@ -30,8 +31,8 @@ namespace Monito.Web.Extensions {
 		}
 	}
 
-	internal class RetrieveBriefLinkOutputModelCSVMap : ClassMap<RetrieveBriefLinkOutputModel> {
-		public RetrieveBriefLinkOutputModelCSVMap() {
+	internal class MinimalLinkApplicationModelCSVMap : ClassMap<MinimalLinkApplicationModel> {
+		public MinimalLinkApplicationModelCSVMap() {
 			Map(m => m.ID).Name("link id");
 			Map(m => m.URL).Name("url");
 			Map(m => m.Output).Name("output");

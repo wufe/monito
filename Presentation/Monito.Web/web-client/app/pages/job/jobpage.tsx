@@ -7,7 +7,7 @@ import { ActionsContainer } from '~/app/pages/job/actions/actions-container';
 
 export const JobPage = () => {
 
-	const { userUUID, jobUUID } = useParams();
+	const { userUUID, jobUUID } = useParams<{ userUUID: string; jobUUID: string; }>();
 
 	// useRealtimeJobUpdates(userUUID, jobUUID);
 	useJobFetch(userUUID, jobUUID);

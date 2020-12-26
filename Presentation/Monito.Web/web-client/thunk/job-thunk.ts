@@ -58,6 +58,7 @@ export const loadJobThunk = (userUUID: string, jobUUID: string): ApplicationThun
                 return data;
             })
             .catch(error => {
+                console.log(error);
                 const response: AxiosResponse<JobModel> = error.response;
                 if (response && response.status === 404)
                     dispatch(addLogMessageActionBuilder("Request not found."));
@@ -137,7 +138,7 @@ export const downloadCSV =
     (userUUID: string, jobUUID: string): ApplicationThunkAction<any> =>
     (dispatch, getState) => {
         const url  = `/api/job/${userUUID}/${jobUUID}/download/csv`;
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
             setTimeout(() => {
                 window.open(url);
                 resolve();

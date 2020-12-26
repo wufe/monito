@@ -16,7 +16,7 @@ namespace Monito.ValueObjects {
 		public int Redirects { get; set; }
 
 		[Required]
-		[Range(1, 20)]
+		[Range(1, 4)]
 		public int Threads { get; set; }
 
 		[Required]

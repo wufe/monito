@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Monito.Application.Model\Monito.Application.Model.csproj" />
+    <ProjectReference Include="..\..\Domain\Monito.Domain.Entity\Monito.Domain.Entity.csproj" />
+    <ProjectReference Include="..\..\Persistence\Monito.Persistence.Model\Monito.Persistence.Model.csproj" />
+    <ProjectReference Include="..\..\Persistence\Monito.Persistence.Repository.Interface\Monito.Persistence.Repository.Interface.csproj" />
+  </ItemGroup>
+
+</Project>
