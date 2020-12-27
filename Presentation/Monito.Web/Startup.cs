@@ -87,7 +87,7 @@ namespace Monito.Web
             #region GraphQL
             services.AddScoped<MonitoQuery>()
                 .AddScoped<MonitoSchema>()
-                .AddGraphQL(o => { })
+                .AddGraphQL(o => {})
                 .AddGraphTypes(
                     typeof(MonitoSchema),
                     ServiceLifetime.Scoped
@@ -114,7 +114,8 @@ namespace Monito.Web
 
             #region GraphQL
             app.UseGraphQL<MonitoSchema>();
-            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
+            app.UseGraphiQLServer();
+            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions() {});
             app.UseGraphQLAltair();
             #endregion
 

@@ -16,5 +16,10 @@ namespace Monito.Web.Controllers
         {
             return PhysicalFile(_spaService.GetIndexFilePath(), "text/html");
         }
+
+        public IActionResult Version()
+        {
+            return new JsonResult(new { version = "2" });
+        }
     }
 }
