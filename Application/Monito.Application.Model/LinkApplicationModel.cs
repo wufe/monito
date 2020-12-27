@@ -6,5 +6,6 @@ namespace Monito.Application.Model
         public virtual LinkApplicationModelStatus Status { get; set; }
         public virtual string AdditionalData { get; set; }
         public virtual DateTime CreatedAt { get; set; }
+        public int RequestID { get; set; }
     }
 }

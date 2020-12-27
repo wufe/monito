@@ -21,17 +21,24 @@ using AutoMapper;
 using Monito.Application.Services;
 using Monito.Application.Services.Command;
 using System.Text.Json.Serialization;
+using GraphQL.Types;
+using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
+using GraphQL.DataLoader;
+using Monito.Application.Services.Graph;
 
 namespace Monito.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         private string _allowDomainCorsPolicy = "_allowDomainCorsPolicy";
 
@@ -76,6 +83,20 @@ namespace Monito.Web
             {
                 options.AllowSynchronousIO = true;
             });
+
+            #region GraphQL
+            services.AddScoped<MonitoQuery>()
+                .AddScoped<MonitoSchema>()
+                .AddGraphQL(o => { })
+                .AddGraphTypes(
+                    typeof(MonitoSchema),
+                    ServiceLifetime.Scoped
+                )
+                .AddSystemTextJson()
+                .AddErrorInfoProvider(opt => opt.ExposeExceptionStackTrace = Environment.IsDevelopment())
+                .AddDataLoader();
+            #endregion
+
             #endregion
 
         }
@@ -90,6 +111,12 @@ namespace Monito.Web
             {
                 app.UseExceptionHandler("/Home/Index");
             }
+
+            #region GraphQL
+            app.UseGraphQL<MonitoSchema>();
+            app.UseGraphQLPlayground(new GraphQLPlaygroundOptions());
+            app.UseGraphQLAltair();
+            #endregion
 
             var cachePeriod = env.IsDevelopment() ? "0" : "604800";
 
