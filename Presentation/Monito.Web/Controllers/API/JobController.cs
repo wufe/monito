@@ -10,8 +10,6 @@ using Microsoft.Extensions.Logging;
 using Monito.Application.Model;
 using Monito.Application.Model.Command;
 using Monito.Application.Model.Query;
-using Monito.Domain.Service.Interface;
-using Monito.ValueObjects;
 using Monito.Web.Extensions;
 using Monito.Web.Models;
 using Monito.Web.Services.Interface;
@@ -22,28 +20,19 @@ namespace Monito.Web.Controllers.API
     [ApiController]
 	[Route("api/[controller]")]
 	public class JobController : ControllerBase {
-		private readonly IJobService _jobService;
 		private readonly IHttpRequestService _httpRequestService;
-		private readonly IRequestService _requestService;
-		private readonly IUserService _userService;
 		private readonly ILogger<JobController> _logger;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
         public JobController(
-			IJobService jobService,
 			IHttpRequestService httpRequestService,
-			IRequestService requestService,
-			IUserService userService,
 			ILogger<JobController> logger,
 			IMapper mapper,
 			IMediator mediator
 		)
 		{
-			_jobService         = jobService;
 			_httpRequestService = httpRequestService;
-			_requestService     = requestService;
-			_userService        = userService;
 			_logger             = logger;
 			_mapper             = mapper;
 			_mediator           = mediator;

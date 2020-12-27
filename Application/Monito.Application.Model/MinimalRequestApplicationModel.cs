@@ -34,10 +34,15 @@ namespace Monito.Application.Model
 
     public class RequestOptionsApplicationModel
     {
-        public virtual JobHttpMethod Method { get; set; }
+        public virtual RequestOptionsApplicationModelHttpMethod Method { get; set; }
         public virtual int Redirects { get; set; }
         public virtual int Threads { get; set; }
         public virtual int Timeout { get; set; }
         public virtual string UserAgent { get; set; }
+    }
+
+    public enum RequestOptionsApplicationModelHttpMethod {
+        GET  = 1,
+        HEAD = 2,
     }
 }

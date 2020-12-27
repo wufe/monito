@@ -3,7 +3,6 @@ using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Monito.Application.Model;
-using Monito.ValueObjects.Output;
 using Monito.Web.Services;
 using Monito.Web.Services.Interface;
 
@@ -15,8 +14,6 @@ namespace Monito.Web.Extensions {
 		}
 
 		public static void AddPresentationServices(this IServiceCollection services) {
-			services
-                    .AddScoped<IJobService, JobService>();
 			services
 				.AddScoped<IHttpRequestService, HttpRequestService>();
 			services

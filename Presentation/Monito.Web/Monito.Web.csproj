@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Domain\Monito.Domain.Service\Monito.Domain.Service.csproj" />
-    <ProjectReference Include="..\..\Data\Monito.ValueObjects\Monito.ValueObjects.csproj" />
     <ProjectReference Include="..\..\Data\Monito.Enums\Monito.Enums.csproj" />
     <ProjectReference Include="..\..\Persistence\Monito.Persistence.Database.MySQL\Monito.Persistence.Database.MySQL.csproj" />
     <ProjectReference Include="..\..\Persistence\Monito.Persistence.Configuration\Monito.Persistence.Configuration.csproj" />

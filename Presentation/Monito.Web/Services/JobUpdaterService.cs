@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Monito.Application.Model.Query;
-using Monito.Domain.Service.Interface;
 using Monito.Web.Services.Interface;
 
 namespace Monito.Web.Services
@@ -48,7 +47,6 @@ namespace Monito.Web.Services
 		private async Task SendUpdates() {
 			using (var scope = _serviceScopeFactory.CreateScope()) {
 
-				var linkService = scope.ServiceProvider.GetRequiredService<ILinkService>();
 				var logger = scope.ServiceProvider.GetRequiredService<ILogger<IJobUpdaterService>>();
 				var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 

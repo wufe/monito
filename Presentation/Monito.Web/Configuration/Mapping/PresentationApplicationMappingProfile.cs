@@ -1,6 +1,6 @@
 using AutoMapper;
 using Monito.Application.Model.Command;
-using Monito.ValueObjects;
+using Monito.Web.Models;
 
 namespace Monito.Web.Configuration.Mapping
 {

@@ -8,8 +8,4 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Monito.Domain.Service\Monito.Domain.Service.csproj" />
-  </ItemGroup>
-
 </Project>
